@@ -1,8 +1,10 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { useDarkMode } from "./hooks/useDarkMode";
 
 function App() {
+  const [darkMode, setDarkMode] = useDarkMode();
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +20,7 @@ function App() {
         >
           Learn React
         </a>
+        <button onClick={() => setDarkMode(!darkMode)}>Toggle Dark Mode</button>
       </header>
     </div>
   );
