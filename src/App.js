@@ -1,10 +1,10 @@
-import React from "react";
-import { ThemeProvider } from "styled-components";
+import React from 'react';
+import { ThemeProvider } from 'styled-components';
 
-import Theme from "./themes";
-import { GlobalStyles } from "./themes/global";
-import Toggle from "./components/Toggle";
-import { useTheme } from "./hooks";
+import Theme from './themes';
+import { GlobalStyles } from './themes/global';
+import Toggle from './components/Toggle';
+import { useTheme } from './hooks';
 
 const App = () => {
   const [theme, changeTheme] = useTheme();
