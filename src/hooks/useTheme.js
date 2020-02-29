@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useLocalStorage } from "../hooks";
-import { themes } from "../themes";
+import { useEffect, useState } from 'react';
+import { useLocalStorage } from '.';
+import { themes } from '../themes';
 
 export const useTheme = () => {
   const [theme, setTheme] = useState(themes[0]);
-  const [storedTheme, setStoredTheme] = useLocalStorage("theme");
+  const [storedTheme, setStoredTheme] = useLocalStorage('theme');
 
-  const setMode = mode => {
+  const setMode = (mode) => {
     setStoredTheme(mode);
     setTheme(mode);
   };
 
   const toggleTheme = () => {
-    setMode(themes[themes.findIndex(t => t === theme) + 1] || themes[0]);
+    setMode(themes[themes.findIndex((t) => t === theme) + 1] || themes[0]);
   };
 
   useEffect(() => {

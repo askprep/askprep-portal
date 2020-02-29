@@ -1,4 +1,4 @@
-import * as Theme from "./theme";
+import * as Theme from './theme';
 
 export const themes = Object.keys(Theme);
 

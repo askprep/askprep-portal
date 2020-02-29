@@ -1,17 +1,17 @@
-import React from "react";
-import styled from "styled-components";
-import Theme from "../themes";
+import React from 'react';
+import styled from 'styled-components';
+import Theme from '../themes';
 
 const ToggleContainer = styled.button`
   position: relative;
   display: flex;
   justify-content: center;
-  background: ${props => props.theme.gradient};
+  background: ${(props) => props.theme.gradient};
   width: 8rem;
   height: 3.5rem;
   margin: 0 auto;
   border-radius: 30px;
-  border: 2px solid ${props => props.theme.toggleBorder};
+  border: 2px solid ${(props) => props.theme.toggleBorder};
   font-size: 0.5rem;
   padding: 0.5rem;
   overflow: hidden;

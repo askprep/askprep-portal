@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
   *,
@@ -9,8 +9,8 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     align-items: center;
-    background: ${props => props.theme.body};
-    color: ${props => props.theme.text};
+    background: ${(props) => props.theme.body};
+    color: ${(props) => props.theme.text};
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -36,6 +36,6 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   a {
-    color: ${props => props.theme.text};
+    color: ${(props) => props.theme.text};
   }
   `;
