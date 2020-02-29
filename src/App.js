@@ -2,8 +2,6 @@ import React from 'react';
 import {
   Route,
   Switch,
-  Link,
-  useHistory,
 } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
