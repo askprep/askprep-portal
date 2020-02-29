@@ -26,6 +26,7 @@ const ToggleContainer = styled.button`
 
 const Toggle = ({ type, toggleTheme }) => (
   <ToggleContainer onClick={toggleTheme}>
+    <div> Toggle Beautiful Theme !</div>
     <img alt={type} src={Theme[type].link} />
   </ToggleContainer>
 );
