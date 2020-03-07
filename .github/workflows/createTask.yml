@@ -13,5 +13,5 @@ jobs:
       - uses: alex-page/github-project-automation-plus@v0.1.0
         with:
           project: askprep-story-board
-          column: Backlog
+          column: Backlog 🗒
           repo-token: ${{ secrets.APP_GITHUB_TOKEN }}
