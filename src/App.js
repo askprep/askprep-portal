@@ -1,4 +1,8 @@
 import React from 'react';
+import {
+  Route,
+  Switch,
+} from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 import Theme from './themes';
@@ -9,12 +13,21 @@ import { useTheme } from './hooks';
 const App = () => {
   const [theme, changeTheme] = useTheme();
   return (
-    <ThemeProvider theme={Theme[theme]}>
-      <GlobalStyles />
-      <Toggle type={theme} toggleTheme={changeTheme}>
-        Toggle Theme
-      </Toggle>
-    </ThemeProvider>
+    <div>
+      <ThemeProvider theme={Theme[theme]}>
+        <GlobalStyles />
+        <Switch>
+          <Route exact path="/">
+            <Toggle type={theme} toggleTheme={changeTheme}>
+              Toggle Theme
+            </Toggle>
+          </Route>
+          <Route path="/forum">
+            <div>Forum</div>
+          </Route>
+        </Switch>
+      </ThemeProvider>
+    </div>
   );
 };
 
