@@ -10,6 +10,7 @@ import Theme from './themes';
 import { GlobalStyles } from './themes/global';
 import Toggle from './components/Toggle';
 import { useTheme } from './hooks';
+import RichTextEditor from './common/Editor';
 
 const menuStyle = {
   border: 'none',
@@ -87,7 +88,7 @@ const App = () => {
             <div>Forum</div>
           </Route>
           <Route path="/upload">
-            <div>upload view</div>
+            <div>upload view <RichTextEditor /> </div>
           </Route>
         </Switch>
       </ThemeProvider>
