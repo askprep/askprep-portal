@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import Theme from '../themes';
 
 const ToggleContainer = styled.button`
-  position: relative;
-  display: flex;
-  justify-content: center;
+  // position: relative;
+  // display: flex;
+  // justify-content: center;
   background: ${(props) => props.theme.gradient};
-  width: 8rem;
-  height: 3.5rem;
+  // width: 8rem;
+  // height: 3.5rem;
   margin: 0 auto;
   border-radius: 30px;
   border: 2px solid ${(props) => props.theme.toggleBorder};
@@ -18,15 +18,14 @@ const ToggleContainer = styled.button`
   cursor: pointer;
 
   img {
-    width: 2.5rem;
-    height: auto;
+    width: 1rem;
+    height: 1rem;
     transition: all 0.3s linear;
   }
 `;
 
 const Toggle = ({ type, toggleTheme }) => (
   <ToggleContainer onClick={toggleTheme}>
-    <div> Toggle Beautiful Theme !</div>
     <img alt={type} src={Theme[type].link} />
   </ToggleContainer>
 );
