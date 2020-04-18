@@ -86,8 +86,9 @@ class RichTextEditor extends Component{
     }
 
     logState = () => {
-        const value = this.textFromRawContent();
-        console.log(value);
+        const content = this.state.editorState.getCurrentContent();
+        const rawContent = convertToRaw(content);
+        console.log(rawContent);
     }
 
     convertHtml = () =>{
