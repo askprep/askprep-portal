@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CompositeDecorator, ContentBlock, convertFromHTML, convertToRaw, ContentState, Editor, EditorState } from 'draft-js';
+import { CompositeDecorator, ContentBlock, convertFromHTML, convertToRaw, ContentState, Editor, EditorState, convertFromRaw } from 'draft-js';
 
 function findLinkEntities(contentBlock, callback, contentState) {
     contentBlock.findEntityRanges(
@@ -74,24 +74,23 @@ class RichTextEditor extends Component{
         };
       }
 
-    onChange=(editorState) => {
+    onChange=(editorState)=> {
         this.setState({editorState});
     }
 
-    textFromRawContent = () =>{
+    textFromRawContent=()=> {
         const content = this.state.editorState.getCurrentContent();
         const blocks = convertToRaw(content).blocks;
         const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
         return value;
     }
 
-    logState = () => {
-        const content = this.state.editorState.getCurrentContent();
-        const rawContent = convertToRaw(content);
+    logState= () => {
+        const rawContent = this.textFromRawContent();
         console.log(rawContent);
     }
 
-    convertHtml = () =>{
+    convertHtml=() => {
         const decorator = new CompositeDecorator([
             {
               strategy: findLinkEntities,
@@ -103,13 +102,10 @@ class RichTextEditor extends Component{
             },
           ]);
           const sampleMarkup = this.textFromRawContent();
-          const blocksFromHTML = convertFromHTML(sampleMarkup);
-          const state = ContentState.createFromBlockArray(
-            blocksFromHTML.contentBlocks,
-            blocksFromHTML.entityMap,
-          );
+          const rawState = JSON.parse(sampleMarkup);
+          const contentState = convertFromRaw(rawState);
           this.onChange(EditorState.createWithContent(
-            state,
+            contentState,
             decorator,
           ));
     }
