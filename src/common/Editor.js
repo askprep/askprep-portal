@@ -71,6 +71,7 @@ class RichTextEditor extends Component{
         super(props);
         this.state = {
           editorState: EditorState.createEmpty(),
+          editorJsonContent: 'default'
         };
       }
 
@@ -88,6 +89,7 @@ class RichTextEditor extends Component{
     logState= () => {
         const rawContent = this.textFromRawContent();
         console.log(rawContent);
+        this.setState({editorJsonContent: JSON.stringify(this.state.editorState.getCurrentContent(), null, 2)})
     }
 
     convertHtml=() => {
@@ -112,14 +114,19 @@ class RichTextEditor extends Component{
 
     render() {
         return (
-            <div>
-                <button onClick={this.logState}>Log</button>
-                <button onClick={this.convertHtml}>Convert Html</button>
+          <>
+            <button onClick={this.logState}>Log</button>
+            <button onClick={this.convertHtml}>Convert Html</button>
+            <div style={{width:'50%', border: '1px dashed #ccc'}}>
                 <Editor 
                     editorState={this.state.editorState}
                     onChange={this.onChange}
                 />
             </div>
+            <div style={{width:'48%', float:'right', border: '1px dashed #ccc'}}>
+              <pre>{this.state.editorJsonContent}</pre>
+            </div>
+            </>
         );
       }
 };
