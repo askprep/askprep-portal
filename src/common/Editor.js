@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { CompositeDecorator, ContentBlock, convertFromHTML, convertToRaw, ContentState, Editor, EditorState, convertFromRaw } from 'draft-js';
+import 'draft-js/dist/Draft.css';
 
 function findLinkEntities(contentBlock, callback, contentState) {
     contentBlock.findEntityRanges(
@@ -71,12 +72,14 @@ class RichTextEditor extends Component{
         super(props);
         this.state = {
           editorState: EditorState.createEmpty(),
-          editorJsonContent: 'default'
+          editorJsonContent: 'default',
+          input: ""
         };
       }
 
     onChange=(editorState)=> {
         this.setState({editorState});
+        this.setState({editorJsonContent: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()), null, 2)})
     }
 
     textFromRawContent=()=> {
@@ -89,7 +92,7 @@ class RichTextEditor extends Component{
     logState= () => {
         const rawContent = this.textFromRawContent();
         console.log(rawContent);
-        this.setState({editorJsonContent: JSON.stringify(this.state.editorState.getCurrentContent(), null, 2)})
+        this.setState({editorJsonContent: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()), null, 2)})
     }
 
     convertHtml=() => {
@@ -103,19 +106,31 @@ class RichTextEditor extends Component{
               component: Image,
             },
           ]);
-          const sampleMarkup = this.textFromRawContent();
-          const rawState = JSON.parse(sampleMarkup);
-          const contentState = convertFromRaw(rawState);
-          this.onChange(EditorState.createWithContent(
-            contentState,
-            decorator,
-          ));
+          const apiArg = {"image_path":this.state.input};
+          const apiUrl = "http://127.0.0.1:8080/ocr"
+          fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(apiArg),
+          }).then(res=>res.json())
+          .then(data=>{
+            const rawState = data;
+            const contentState = convertFromRaw(rawState.content);
+            this.onChange(EditorState.createWithContent(
+              contentState,
+              decorator,
+            ));
+            return rawState;
+          }).catch(err=>{ console.error(err) });
     }
-
+    
     render() {
         return (
           <>
             <button onClick={this.logState}>Log</button>
+            <input type="text" value={this.state.input} onInput={e => this.setState({input:e.target.value})}></input>
             <button onClick={this.convertHtml}>Convert Html</button>
             <div style={{width:'50%', border: '1px dashed #ccc'}}>
                 <Editor 
