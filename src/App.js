@@ -11,6 +11,7 @@ import { GlobalStyles } from './themes/global';
 import Toggle from './components/Toggle';
 import { useTheme } from './hooks';
 import RichTextEditor from './common/Editor';
+import ForumLanding from './components/ForumLanding/ForumLanding';
 
 const menuStyle = {
   border: 'none',
@@ -82,10 +83,7 @@ const App = () => {
         {/* </Visibility> */}
         <Switch>
           <Route exact path="/">
-            This is default Route
-          </Route>
-          <Route path="/forum">
-            <div>Forum</div>
+            <ForumLanding />
           </Route>
           <Route path="/upload">
             <div>upload view <RichTextEditor /> </div>
