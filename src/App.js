@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import {
-  Route,
-  Switch,
-} from 'react-router-dom';
-import { Visibility, Menu, Container, Image, Dropdown } from 'semantic-ui-react';
+  Button,
+  Icon,
+  Menu,
+  Container,
+  Image,
+  Dropdown,
+} from 'semantic-ui-react';
 import { ThemeProvider } from 'styled-components';
-
 import Theme from './themes';
 import { GlobalStyles } from './themes/global';
 import Toggle from './components/Toggle';
 import { useTheme } from './hooks';
+import LoginModal from './components/login/login';
+import { Auth } from './Auth/auth';
+import { ProfileDropdown } from './components/UserProfile/ProfileDropdown ';
 
 const menuStyle = {
   border: 'none',
@@ -28,7 +34,22 @@ const fixedMenuStyle = {
 
 const App = () => {
   const [theme, changeTheme] = useTheme();
-  const [menuFixed, setMenuFixed] = useState(false);
+  const [menuFixed] = useState(false);
+  const [isloginModalOpen, setisloginModalOpen] = useState(false);
+  const onloginModalClose = () => {
+    setisloginModalOpen(false);
+  };
+  const onloginModalOpen = () => {
+    setisloginModalOpen(true);
+  };
+  const [userDetails, setUserDetails] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      let userProfile = await Auth.CallUserRoleApi();
+      setUserDetails(userProfile);
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <ThemeProvider theme={Theme[theme]}>
@@ -38,6 +59,9 @@ const App = () => {
           onBottomVisible={setMenuFixed(false)}
           once={false}
         > */}
+        {/* <UserDetailsConsumer>
+          {(value) => ( */}
+        <>
           <Menu
             borderless
             className="ask-prep-header"
@@ -49,15 +73,19 @@ const App = () => {
                 <Image size="mini" src="/logo.png" />
               </Menu.Item>
               <Menu.Item header>Project Name</Menu.Item>
-              <Menu.Item as="a" href="/forum">Forum</Menu.Item>
-              <Menu.Item as="a" href="/upload">Upload</Menu.Item>
+              <Menu.Item as="a" href="/forum">
+                Forum
+              </Menu.Item>
+              <Menu.Item as="a" href="/upload">
+                Upload
+              </Menu.Item>
 
               <Menu.Menu position="right">
-              <Menu.Item as="a">
-                <Toggle type={theme} toggleTheme={changeTheme}>
-                  Toggle Theme
-                </Toggle>
-              </Menu.Item>
+                <Menu.Item as="a">
+                  <Toggle type={theme} toggleTheme={changeTheme}>
+                    Toggle Theme
+                  </Toggle>
+                </Menu.Item>
                 <Dropdown text="Dropdown" pointing className="link item">
                   <Dropdown.Menu>
                     <Dropdown.Item>List Item</Dropdown.Item>
@@ -76,20 +104,32 @@ const App = () => {
                   </Dropdown.Menu>
                 </Dropdown>
               </Menu.Menu>
+              {!userDetails && (
+                <Button onClick={onloginModalOpen} circular animated="vertical">
+                  <Button.Content hidden>Login</Button.Content>
+                  <Button.Content visible>
+                    <Icon size="large" name="user" />
+                  </Button.Content>
+                </Button>
+              )}
+              {userDetails && <ProfileDropdown {...userDetails} />}
             </Container>
           </Menu>
-        {/* </Visibility> */}
-        <Switch>
-          <Route exact path="/">
-            This is default Route
-          </Route>
-          <Route path="/forum">
-            <div>Forum</div>
-          </Route>
-          <Route path="/upload">
-            <div>upload view</div>
-          </Route>
-        </Switch>
+          <Switch>
+            <Route exact path="/">
+              This is default Route
+            </Route>
+            <Route path="/forum">
+              <div>Forum</div>
+            </Route>
+            <Route path="/upload">
+              <div>upload view</div>
+            </Route>
+          </Switch>
+          <LoginModal isOpen={isloginModalOpen} onClose={onloginModalClose} />
+        </>
+        {/* )}
+        </UserDetailsConsumer> */}
       </ThemeProvider>
     </div>
   );
