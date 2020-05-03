@@ -1,0 +1,17 @@
+name: Create Task in Backlog
+
+on:
+  pull_request:
+    types: [opened]  
+  issues:
+    types: [opened]
+
+jobs:
+  automate-project-columns:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: alex-page/github-project-automation-plus@v0.1.0
+        with:
+          project: askprep-story-board
+          column: Backlog 🗒
+          repo-token: ${{ secrets.APP_GITHUB_TOKEN }}
