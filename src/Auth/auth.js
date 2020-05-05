@@ -4,9 +4,7 @@ import { getUserRoleandPermission } from '../common/Repositories/manageUsersRepo
 import SessionStorageService from '../common/Services/session-storage.service';
 import JwtTokenService from '../common/Services/jwt-token.service';
 
-const LOGOUT_URL = window.LOGOUT_URL
-  ? window.LOGOUT_URL
-  : 'https://login-stg.pwcinternal.com/openam/oauth2/connect/endSession';
+const LOGOUT_URL = window.LOGOUT_URL ? window.LOGOUT_URL : '';
 
 export class Auth {
   static _userRolePermission;
