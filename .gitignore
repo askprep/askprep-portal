@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/src/Askprep_ocr
 /.pnp
 .pnp.js
 

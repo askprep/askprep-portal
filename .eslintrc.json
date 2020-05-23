@@ -1,31 +1,59 @@
 {
-  "extends": "airbnb",
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "jquery": true,
-    "jest": true
+    "node": true,
+    "jest": true,
+    "es6": true
   },
+  "plugins": ["react", "react-native", "flowtype", "import"],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "rules": {
-    "react/jsx-filename-extension": 0,
-    "jsx-a11y/label-has-for": 0,
-    "jsx-a11y/label-has-associated-control": 0,
-    "no-tabs": 0,
-    "indent": 0,
-    "react/jsx-indent": 0,
-    "import/prefer-default-export": 0,
+    "comma-dangle": [2, "always-multiline"],
     "react/prop-types": 0,
-    "operator-linebreak": 0,
-    "no-console": 0,
-    "no-use-before-define": 0,
-    "no-param-reassign": 0,
-    "import/no-cycle": 0
+    "react/jsx-no-bind": 0,
+    "react/display-name": 0,
+    "new-cap": 0,
+    "react-native/no-unused-styles": 2,
+    "react-native/split-platform-components": 2,
+    "react-native/no-inline-styles": 1,
+    "react-native/no-color-literals": 0,
+    "no-class-assign": 1,
+    "no-console": 1,
+    "object-curly-spacing": [1, "always"],
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1,
+    "import/first": 2
   }
 }
+// {
+//   "extends": "airbnb",
+//   "parserOptions": {
+//     "sourceType": "module",
+//     "ecmaFeatures": {
+//       "jsx": true
+//     }
+//   },
+//   "env": {
+//     "browser": true,
+//     "commonjs": true,
+//     "es6": true,
+//     "jquery": true,
+//     "jest": true
+//   },
+//   "rules": {
+//     "react/jsx-filename-extension": 0,
+//     "jsx-a11y/label-has-for": 0,
+//     "jsx-a11y/label-has-associated-control": 0,
+//     "no-tabs": 0,
+//     "indent": 0,
+//     "react/jsx-indent": 0,
+//     "import/prefer-default-export": 0,
+//     "react/prop-types": 0,
+//     "operator-linebreak": 0,
+//     "no-console": 0,
+//     "no-use-before-define": 0,
+//     "no-param-reassign": 0,
+//     "import/no-cycle": 0
+//   }
+// }

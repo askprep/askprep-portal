@@ -7,7 +7,7 @@ export const API_HOST = window.API_HOST
 const HttpService = Axios.create({
   baseURL: `${API_HOST.replace(/\/$/, '')}/api/`,
   headers: {
-    Authorization: `token ${sessionStorage.getItem('access_token')}`,
+    Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
   },
 });
 

@@ -69,9 +69,7 @@ export default class IDAM {
         try {
           if (res.statusText === 'OK') {
             res.json().then((payload) => {
-              const accessToken = payload.access_token
-                ? payload.access_token
-                : '';
+              const accessToken = payload.jwt_token ? payload.jwt_token : '';
               // Set tokens in session storage
               SessionStorageService.setAccessToken(accessToken);
               this.IdamCleanUp();
