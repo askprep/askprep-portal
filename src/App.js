@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import {
   Button,
@@ -18,6 +18,7 @@ import ForumLanding from './components/ForumLanding/ForumLanding';
 import LoginModal from './components/login/login';
 import { Auth } from './Auth/auth';
 import { ProfileDropdown } from './components/UserProfile/ProfileDropdown ';
+import SessionStorageService from '../src/common/Services/session-storage.service';
 
 const menuStyle = {
   border: 'none',
@@ -47,8 +48,12 @@ const App = () => {
   const [userDetails, setUserDetails] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
-      let userProfile = await Auth.CallUserRoleApi();
-      setUserDetails(userProfile);
+      const oauthStatus = SessionStorageService.getOAuthStatus();
+      const idToken = SessionStorageService.getAccessToken();
+      if (oauthStatus && idToken) {
+        const userProfile = await Auth.CallUserRoleApi();
+        if (userProfile) setUserDetails(userProfile);
+      }
     };
     fetchData();
   }, []);
@@ -106,7 +111,9 @@ const App = () => {
                   </Dropdown.Menu>
                 </Dropdown>
               </Menu.Menu>
-              {!userDetails && (
+              {userDetails ? (
+                <ProfileDropdown {...userDetails} />
+              ) : (
                 <Button onClick={onloginModalOpen} circular animated="vertical">
                   <Button.Content hidden>Login</Button.Content>
                   <Button.Content visible>
@@ -114,19 +121,20 @@ const App = () => {
                   </Button.Content>
                 </Button>
               )}
-              {userDetails && <ProfileDropdown {...userDetails} />}
             </Container>
           </Menu>
-        {/* </Visibility> */}
-        <Switch>
-          <Route exact path="/">
-            <ForumLanding />
-          </Route>
-          <Route path="/upload">
-            <div>upload view <RichTextEditor /> </div>
-          </Route>
-        </Switch>
-        <LoginModal isOpen={isloginModalOpen} onClose={onloginModalClose} />
+          {/* </Visibility> */}
+          <Switch>
+            <Route exact path="/">
+              <ForumLanding />
+            </Route>
+            <Route path="/upload">
+              <div>
+                upload view <RichTextEditor />
+              </div>
+            </Route>
+          </Switch>
+          <LoginModal isOpen={isloginModalOpen} onClose={onloginModalClose} />
         </>
       </ThemeProvider>
     </div>
