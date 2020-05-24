@@ -109,7 +109,7 @@ function FileUploader({
             message: 'Upload Successful',
             iconClass: 'icon circle checkmark thin',
             // iconColorClass: classes.greenColor,
-            imageUrl: 'https://wallpaperaccess.com/full/359168.jpg',//res.data.image_path.replace('.', 'localhost:5000'),
+            imageUrl: res.data.image_path.replace('.', 'http://localhost:5000'), //'https://wallpaperaccess.com/full/359168.jpg',
             contour: res.data.contour,
           });
         }

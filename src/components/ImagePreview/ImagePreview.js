@@ -2,12 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
 /* Component */
-const ImagePreview = ({imageUrl="https://cdn.anadventurousworld.com/wp-content/uploads/2019/01/where-to-stay-in-prague.jpg", contour = [
-    [10, 10],
-    [200, 150],
-    [240, 240],
-    [15, 250],
-  ]} ) => {
+const ImagePreview = ({imageUrl, contour} ) => {
   /* The useRef Hook creates a variable that "holds on" to a value across rendering
          passes. In this case it will hold our component's SVG DOM element. It's
          initialized null and React will assign it later (see the return statement) */
