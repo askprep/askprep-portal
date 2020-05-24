@@ -5,6 +5,8 @@ import axios from 'axios';
 // import ButtonBasic from 'rdx/build/elements/Buttons/Button';
 import { Icon, Progress, Button } from 'semantic-ui-react';
 import ImagePreview from '../ImagePreview/ImagePreview';
+import HttpService from '../../common/HttpService';
+
 
 // const useStyles = createUseStyles({
 //   dropzone: {
@@ -42,8 +44,8 @@ function FileUploader({
     iconClass: '',
     // iconColorClass: '',
     imageUrl: undefined,
-    contour: undefined,
   });
+  const [contour, setContour] = useState(undefined);
   const [isUploadDisabled, setIsUploadDisabled] = useState(true);
   const [isUploadComplete, setIsUploadComplete] = useState(false);
   const [svgContainerWidth, setSvgContainerWidth] = useState(0);
@@ -117,10 +119,10 @@ function FileUploader({
             iconClass: 'icon circle checkmark thin',
             // iconColorClass: classes.greenColor,
             imageUrl: res.data.image_path.replace('.', 'http://localhost:5000'), //'https://wallpaperaccess.com/full/359168.jpg',
-            contour: res.data.contour,
             height: res.data.height,
             width: res.data.width,
           });
+          setContour(res.data.contour);
         }
         setIsUploadComplete(true);
       })
@@ -137,6 +139,27 @@ function FileUploader({
         }
       });
   };
+
+  const transformFile = (fileData) => () => {
+    axios
+      .post('http://127.0.0.1:5000/transformFile', fileData)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // try {
+    //   const endpoint = `transformFile`;
+    //   HttpService.post(endpoint, fileData).then(function(res) {
+    //     return res.data;
+    //   });
+    // } catch (error) {
+    //   return {};
+    // }
+  };
+
 
   return (
     <>
@@ -195,11 +218,20 @@ function FileUploader({
           style={{width: customResultMessage.width, height: customResultMessage.height,}}
         >
           {isUploadComplete && (
-            <ImagePreview imageUrl={customResultMessage.imageUrl} contour= {customResultMessage.contour} />
+            <ImagePreview imageUrl={customResultMessage.imageUrl} contour= {contour} setContour={setContour} />
           )}
         </svg>
       </div>
-
+      
+      <Button
+          size="small"
+          secondary
+          basic
+          type="submit"
+          id="uploadFileBtn"
+          onClick={transformFile({contour: contour, image_path: customResultMessage.imageUrl, max_width: 1212})}
+          content="Transform"
+        />
       
     </>
   );

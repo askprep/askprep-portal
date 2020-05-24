@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
 /* Component */
-const ImagePreview = ({imageUrl, contour} ) => {
+const ImagePreview = ({imageUrl, contour, setContour} ) => {
   /* The useRef Hook creates a variable that "holds on" to a value across rendering
          passes. In this case it will hold our component's SVG DOM element. It's
          initialized null and React will assign it later (see the return statement) */
@@ -24,7 +24,7 @@ const ImagePreview = ({imageUrl, contour} ) => {
 
     //Called on mousedown if mousedown point if a polygon handle
     function completePolygon() {
-      d3.select('g.outline').remove();
+      d3.select('g.polygon').remove();
 
       let gPoly = svgCanvas.append('g').classed('polygon', true);
       gPoly.append('polygon').attr('points', polyPoints);
@@ -103,6 +103,7 @@ const ImagePreview = ({imageUrl, contour} ) => {
       }
 
       //re-rendering polygon attributes to fit the handles
+      setContour(alteredPoints);
       polygon.attr("points", alteredPoints);
       
       // var alteredPoints = [];
@@ -169,7 +170,6 @@ const ImagePreview = ({imageUrl, contour} ) => {
           ref={d3Container}
         />
         {/* <rect width="590" height="490" style={{fill:'#6666ff', 'fill-rule':'evenodd',}} /> */}
-        <button id="poly">Poly</button>
     </>
   );
 };
