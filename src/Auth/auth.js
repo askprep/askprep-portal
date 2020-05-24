@@ -3,6 +3,7 @@ import OAUTH from './helpers/oauth';
 import { getUserRoleandPermission } from '../common/Repositories/manageUsersRepository';
 import SessionStorageService from '../common/Services/session-storage.service';
 import JwtTokenService from '../common/Services/jwt-token.service';
+import { setUserdetails } from '../redux/Actions/userManagement/ReduxActions';
 
 const LOGOUT_URL = window.LOGOUT_URL ? window.LOGOUT_URL : '';
 
@@ -19,6 +20,7 @@ export class Auth {
 
   static async CallUserRoleApi() {
     let userDetails = await getUserRoleandPermission();
+    setUserdetails(userDetails);
     this._userRolePermission = userDetails;
     return userDetails;
   }
