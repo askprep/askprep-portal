@@ -10,7 +10,7 @@ const StyledDropdown = styled(Dropdown)`
       0 0 0 1px ${(props) => props.theme.backgroundPrimary}!important;
   }
   && {
-    background-color: ${(props) => props.theme.backgroundPrimary};
+    background-color: #333843!important;
     box-shadow: ${(props) => props.theme.boxShadow};
     justify-content: center;
   }

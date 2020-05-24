@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import {
  Card, Icon, Image, Label,
 } from 'semantic-ui-react';
+import FileUploader from '../FileUploader/FileUploader';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 export const StyledCard = styled(Card)`
   &:hover {
@@ -99,6 +101,7 @@ export const StyledCard = styled(Card)`
 
 const QuestionPreviewFeed = () => {
   return (
+    <>
     <StyledCard fluid>
       <Card.Content target="_blank" href="www.google.com">
         <div className="imageContainer">
@@ -144,6 +147,9 @@ const QuestionPreviewFeed = () => {
         </Label>
       </Card.Content>
     </StyledCard>
+    <FileUploader validExtensionList=".jpg" uploadUrl="http://127.0.0.1:5000/fileUpload" uploaderText={{ titleText: 'Click here to select the file or drag and drop the selected file.', allowdFileText: 'Allowed file type is' }} />
+    {/* <ImagePreview /> */}
+    </>
   );
 };
 
