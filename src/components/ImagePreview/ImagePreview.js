@@ -167,20 +167,15 @@ const ImagePreview = ({imageUrl="https://cdn.anadventurousworld.com/wp-content/u
     //     ref={d3Container}
     // />
     <>
-      <svg
-        width="600"
-        height="500"
-        xmlns="http://www.w3.org/2000/svg"
-        ref={d3Container}
-      >
+      
         <image
           href={imageUrl}
           width="600"
           height="500"
+          ref={d3Container}
         />
         {/* <rect width="590" height="490" style={{fill:'#6666ff', 'fill-rule':'evenodd',}} /> */}
-      </svg>
-      <button id="poly">Poly</button>
+        <button id="poly">Poly</button>
     </>
   );
 };

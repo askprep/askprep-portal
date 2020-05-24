@@ -148,7 +148,12 @@ const QuestionPreviewFeed = () => {
       </Card.Content>
     </StyledCard>
     <FileUploader validExtensionList=".jpg" uploadUrl="http://127.0.0.1:5000/fileUpload" uploaderText={{ titleText: 'Click here to select the file or drag and drop the selected file.', allowdFileText: 'Allowed file type is' }} />
-    {/* <ImagePreview /> */}
+    {/* <ImagePreview imageUrl="https://wallpaperaccess.com/full/359168.jpg" contour= {[
+    [15, 10],
+    [200, 150],
+    [240, 240],
+    [15, 250],
+  ]} /> */}
     </>
   );
 };

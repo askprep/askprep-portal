@@ -180,10 +180,16 @@ function FileUploader({
       ) : (
         ''
       )} */}
-
-      {isUploadComplete && (
-        <ImagePreview imageUrl={customResultMessage.imageUrl} contour= {customResultMessage.contour} />
-      )}
+      <svg
+        width="600"
+        height="500"
+        xmlns="http://www.w3.org/2000/svg"
+        // ref={d3Container}
+      >
+        {isUploadComplete && (
+          <ImagePreview imageUrl={customResultMessage.imageUrl} contour= {customResultMessage.contour} />
+        )}
+      </svg>
 
       
     </>
