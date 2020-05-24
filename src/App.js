@@ -18,6 +18,7 @@ import ForumLanding from './components/ForumLanding/ForumLanding';
 import LoginModal from './components/login/login';
 import { Auth } from './Auth/auth';
 import { ProfileDropdown } from './components/UserProfile/ProfileDropdown ';
+import FileUploader from './components/FileUploader/FileUploader';
 
 const menuStyle = {
   border: 'none',
@@ -124,6 +125,9 @@ const App = () => {
           </Route>
           <Route path="/upload">
             <div>upload view <RichTextEditor /> </div>
+          </Route>
+          <Route path="/forum">
+            <FileUploader validExtensionList=".jpg" uploadUrl="http://127.0.0.1:5000/fileUpload" uploaderText={{ titleText: 'Click here to select the file or drag and drop the selected file.', allowdFileText: 'Allowed file type is' }} />
           </Route>
         </Switch>
         <LoginModal isOpen={isloginModalOpen} onClose={onloginModalClose} />

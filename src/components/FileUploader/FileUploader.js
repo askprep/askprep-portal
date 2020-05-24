@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, Fragment } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 // import { createUseStyles } from 'react-jss';
@@ -46,6 +46,8 @@ function FileUploader({
   });
   const [isUploadDisabled, setIsUploadDisabled] = useState(true);
   const [isUploadComplete, setIsUploadComplete] = useState(false);
+  const [svgContainerWidth, setSvgContainerWidth] = useState(0);
+  const svgContainer = useRef(null);
 
   const onFileDialogCancel = useCallback(() => {
     setAcceptedFiles([]);
@@ -67,6 +69,10 @@ function FileUploader({
     }
   }, [acceptedFiles]);
 
+  useEffect(() => {
+    setSvgContainerWidth(svgContainer.current.offsetWidth);
+  }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: validExtensionList,
     onFileDialogCancel,
@@ -81,6 +87,7 @@ function FileUploader({
     setIsUploadDisabled(true);
     const formData = new FormData();
     formData.append('file', acceptedFiles[0]);
+    formData.append('max_width', svgContainerWidth);
 
     axios
     //   .post(`/${uploadUrl}`, formData, {
@@ -111,6 +118,8 @@ function FileUploader({
             // iconColorClass: classes.greenColor,
             imageUrl: res.data.image_path.replace('.', 'http://localhost:5000'), //'https://wallpaperaccess.com/full/359168.jpg',
             contour: res.data.contour,
+            height: res.data.height,
+            width: res.data.width,
           });
         }
         setIsUploadComplete(true);
@@ -180,16 +189,16 @@ function FileUploader({
       ) : (
         ''
       )} */}
-      <svg
-        width="600"
-        height="500"
-        xmlns="http://www.w3.org/2000/svg"
-        // ref={d3Container}
-      >
-        {isUploadComplete && (
-          <ImagePreview imageUrl={customResultMessage.imageUrl} contour= {customResultMessage.contour} />
-        )}
-      </svg>
+      <div ref={svgContainer}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          style={{width: customResultMessage.width, height: customResultMessage.height,}}
+        >
+          {isUploadComplete && (
+            <ImagePreview imageUrl={customResultMessage.imageUrl} contour= {customResultMessage.contour} />
+          )}
+        </svg>
+      </div>
 
       
     </>

@@ -165,8 +165,7 @@ const ImagePreview = ({imageUrl, contour} ) => {
       
         <image
           href={imageUrl}
-          width="600"
-          height="500"
+          style={{width: '100%', height: 'auto',}}
           ref={d3Container}
         />
         {/* <rect width="590" height="490" style={{fill:'#6666ff', 'fill-rule':'evenodd',}} /> */}
