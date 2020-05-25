@@ -223,7 +223,7 @@ function FileUploader({
         </svg>
         <img
           src={customResultMessage.imageUrl}
-          style={{width: '100%', height: 'auto', position: 'absolute', left: 0, zIndex: '-1111'}}
+          style={{width: customResultMessage.width, height: customResultMessage.height, position: 'absolute', left: 0, zIndex: '-1111'}}
         />
       </div>
       
