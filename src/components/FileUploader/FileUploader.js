@@ -43,11 +43,13 @@ function FileUploader({
     message: '',
     iconClass: '',
     // iconColorClass: '',
-    imageUrl: undefined,
+    // imageUrl: undefined,
   });
+  const [imageUrl, setImageUrl] = useState(undefined);
   const [contour, setContour] = useState(undefined);
   const [isUploadDisabled, setIsUploadDisabled] = useState(true);
   const [isUploadComplete, setIsUploadComplete] = useState(false);
+  const [isTransformComplete, setIsTransformComplete] = useState(false);
   const [svgContainerWidth, setSvgContainerWidth] = useState(0);
   const svgContainer = useRef(null);
 
@@ -119,11 +121,12 @@ function FileUploader({
             message: 'Upload Successful',
             iconClass: 'icon circle checkmark thin',
             // iconColorClass: classes.greenColor,
-            imageUrl: res.data.image_path.replace('.', 'http://localhost:5000'), //'https://wallpaperaccess.com/full/359168.jpg',
+            // imageUrl: res.data.image_path, //'https://wallpaperaccess.com/full/359168.jpg',
             height: res.data.height,
             width: res.data.width,
           });
           setContour(res.data.contour);
+          setImageUrl(res.data.image_path);
         }
         setIsUploadComplete(true);
       })
@@ -145,7 +148,8 @@ function FileUploader({
     axios
       .post('http://127.0.0.1:5000/transformFile', fileData)
       .then((res) => {
-        console.log(res.data);
+        setImageUrl(res.data.image_path);
+        setIsTransformComplete(true);
       })
       .catch((err) => {
         console.log(err);
@@ -219,11 +223,11 @@ function FileUploader({
           style={{width: customResultMessage.width, height: customResultMessage.height,}}
         >
           {isUploadComplete && (
-            <ImagePreview imageUrl={customResultMessage.imageUrl} contour= {contour} setContour={setContour} />
+            <ImagePreview imageUrl={imageUrl} contour= {contour} setContour={setContour} />
           )}
         </svg>
         <img
-          src={customResultMessage.imageUrl}
+          src={imageUrl && imageUrl.replace('.', 'http://localhost:5000')}
           style={{width: customResultMessage.width, height: customResultMessage.height, position: 'absolute', left: 0, zIndex: '-1111'}}
         />
       </div>
@@ -234,9 +238,16 @@ function FileUploader({
           basic
           type="submit"
           id="uploadFileBtn"
-          onClick={transformFile({contour: contour, image_path: customResultMessage.imageUrl, max_width: 1212})}
+          onClick={transformFile({contour: contour, image_path: imageUrl, max_width: svgContainerWidth})}
           content="Transform"
         />
+        <br/>
+        {(isTransformComplete) &&
+          <img
+            src={imageUrl && imageUrl.replace('.', 'http://localhost:5000')}
+            style={{width: customResultMessage.width, height: customResultMessage.height, position: 'absolute', left: 0, zIndex: '-1111'}}
+          />
+        }
       
     </>
   );
