@@ -6,7 +6,7 @@ const ImagePreview = ({imageUrl, contour, setContour} ) => {
   /* The useRef Hook creates a variable that "holds on" to a value across rendering
          passes. In this case it will hold our component's SVG DOM element. It's
          initialized null and React will assign it later (see the return statement) */
-  const d3Container = useRef(null);
+  // const d3Container = useRef(null);
 
   var svgCanvas = d3.select('svg');
   var polyCoordinates  = contour;
@@ -140,10 +140,10 @@ const ImagePreview = ({imageUrl, contour, setContour} ) => {
          for instance inserting elements into the DOM using D3 */
   useEffect(
     () => {
-      if (d3Container.current) {
+      // if (d3Container.current) {
         Polygon(polyCoordinates);
-      }
-    }, [d3Container.current],
+      // }
+    }, [],
 
     /*
                 useEffect has a dependency array (below). It's a list of dependency
@@ -164,11 +164,11 @@ const ImagePreview = ({imageUrl, contour, setContour} ) => {
     // />
     <>
       
-        <image
+        {/* <image
           href={imageUrl}
           style={{width: '100%', height: 'auto',}}
           ref={d3Container}
-        />
+        /> */}
         {/* <rect width="590" height="490" style={{fill:'#6666ff', 'fill-rule':'evenodd',}} /> */}
     </>
   );
