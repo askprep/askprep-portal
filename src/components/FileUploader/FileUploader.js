@@ -246,7 +246,7 @@ function FileUploader({
         <br/>
         {(isTransformComplete) &&
           <img
-            src={imageUrl && imageUrl.replace('.', 'http://localhost:5000')}
+            src={imageUrl && imageUrl.replace('.', 'http://localhost:5000').concat("?").concat(Math.random())}
             style={{width: customResultMessage.width, height: customResultMessage.height, position: 'absolute', left: 0, zIndex: '-1111'}}
           />
         }
