@@ -85,6 +85,7 @@ function FileUploader({
     if (acceptedFiles.length <= 0) {
       return;
     }
+    setIsUploadComplete(false);
     setCustomResultMessage({ message: '', iconClass: '', iconColorClass: '' });
     setIsUploadDisabled(true);
     const formData = new FormData();
