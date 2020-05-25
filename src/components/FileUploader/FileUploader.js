@@ -88,6 +88,7 @@ function FileUploader({
       return;
     }
     setIsUploadComplete(false);
+    setIsTransformComplete(false);
     setCustomResultMessage({ message: '', iconClass: '', iconColorClass: '' });
     setIsUploadDisabled(true);
     const formData = new FormData();
@@ -145,6 +146,7 @@ function FileUploader({
   };
 
   const transformFile = (fileData) => () => {
+    setIsTransformComplete(false);
     axios
       .post('http://127.0.0.1:5000/transformFile', fileData)
       .then((res) => {
