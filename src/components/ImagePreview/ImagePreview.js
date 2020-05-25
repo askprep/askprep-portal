@@ -93,7 +93,7 @@ const ImagePreview = ({imageUrl, contour, setContour} ) => {
       //loop through the group of circle handles attatched to the polygon and push to new array
       for (var i = 0; i < polyPoints.length; i++) {
           var circleCoord = d3.select(circles._groups[0][i]);
-          var pointCoord = [circleCoord.attr("cx"), circleCoord.attr("cy")];
+          var pointCoord = [Number(circleCoord.attr("cx")), Number(circleCoord.attr("cy"))];
           alteredPoints[i] = pointCoord;
       }
 
