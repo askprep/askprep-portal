@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import { Grid, Button, Icon } from 'semantic-ui-react';
-import { rectangles } from '../discussion/sample';
+import React, { useState, useEffect } from 'react';
+import { Grid, Button } from 'semantic-ui-react';
 import './rects.css';
+import { getRects } from '../../common/Repositories/discussionRepository';
 
-const Rects = () => {
-  const [rectangleTypes, setrectangleTypes] = useState([...rectangles]);
+const Rects = (props) => {
+  const [rectangleTypes, setrectangleTypes] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      let rectangles = await getRects({
+        image_path: 'C:\\Users\\animeshl913\\Downloads\\image (5).png',
+      });
+      setrectangleTypes(
+        rectangles && rectangles.length > 0 ? [...rectangles] : [],
+      );
+    }
+    fetchData();
+  }, []);
   const changeType = (type, index) => {
     switch (type) {
       case 'image':
