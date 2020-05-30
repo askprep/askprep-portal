@@ -24,7 +24,6 @@ const LoginModal = (props) => {
               <Button
                 onClick={() => Auth.login()}
                 circular
-                color="github"
                 icon="github"
                 size="large"
               />
@@ -34,12 +33,7 @@ const LoginModal = (props) => {
               <Button circular color="linkedin" icon="linkedin" size="large" />
             </Grid.Column>
             <Grid.Column>
-              <Button
-                circular
-                color="google plus"
-                icon="google plus"
-                size="large"
-              />
+              <Button circular icon="google plus" size="large" />
             </Grid.Column>
           </Grid.Row>
         </Grid>

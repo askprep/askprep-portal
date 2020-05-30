@@ -9,7 +9,7 @@ const StyledDropdown = styled(Dropdown)`
       0 0 0 1px ${(props) => props.theme.backgroundPrimary}!important;
   }
   && {
-    background-color: ${(props) => props.theme.backgroundPrimary};
+    background-color: #333843!important;
     box-shadow: ${(props) => props.theme.boxShadow};
     justify-content: center;
   }
@@ -96,8 +96,22 @@ const results = [
 
 const SearchFilterBar = (props) => {
   const [open, setOpen] = useState(false);
-  const closeModal = () => {
-    setOpen(!open);
+  const [currentPage, setcurrentPage] = useState('rects');
+  const closeModal = (type) => {
+    switch (type) {
+      case 'next':
+        setcurrentPage('draft');
+        break;
+      case 'draft':
+        setOpen(false);
+        break;
+      case 'close':
+        setOpen(false);
+        break;
+      default:
+        setOpen(false);
+        break;
+    }
   };
   const openModal = () => {
     setOpen(true);
@@ -127,7 +141,7 @@ const SearchFilterBar = (props) => {
         />
       </Grid.Column>
       <Grid.Column width={4}>
-        <button onClick={openModal} class="ui button">
+        <button onClick={openModal} className="ui button">
           New Discussion
         </button>
       </Grid.Column>
@@ -140,19 +154,30 @@ const SearchFilterBar = (props) => {
       >
         <Modal.Header>Start a new discussion</Modal.Header>
         <Modal.Content>
-          <Discussion />
+          <Discussion currentPage={currentPage} />
         </Modal.Content>
         <Modal.Actions>
-          <Button onClick={closeModal} negative>
+          <Button onClick={() => closeModal('close')} negative>
             Close
           </Button>
-          <Button
-            onClick={closeModal}
-            positive
-            labelPosition="right"
-            icon="checkmark"
-            content="Submit"
-          />
+          {currentPage === 'rects' && (
+            <Button
+              onClick={() => closeModal('next')}
+              positive
+              labelPosition="right"
+              icon="arrow right"
+              content="Next"
+            />
+          )}
+          {currentPage === 'draft' && (
+            <Button
+              onClick={() => closeModal('submit')}
+              positive
+              labelPosition="right"
+              icon="checkmark"
+              content="Submit"
+            />
+          )}
         </Modal.Actions>
       </Modal>
     </>

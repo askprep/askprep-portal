@@ -8,89 +8,103 @@ import {
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import './discussion.css';
-import { data } from './sample';
+import { geteditorData } from '../../common/Repositories/discussionRepository';
 
 export default class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
-    const styles = {
-      root: {
-        fontFamily: "'Helvetica', sans-serif",
-        padding: 20,
-        width: 600,
-      },
-      editor: {
-        border: '1px solid #ccc',
-        cursor: 'text',
-        minHeight: 80,
-        padding: 10,
-      },
-      button: {
-        marginTop: 10,
-        textAlign: 'center',
-      },
-    };
-    function findLinkEntities(contentBlock, callback, contentState) {
-      contentBlock.findEntityRanges((character) => {
-        const entityKey = character.getEntity();
-        return (
-          entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === 'LINK'
-        );
-      }, callback);
-    }
-
-    const Link = (props) => {
-      const { url } = props.contentState.getEntity(props.entityKey).getData();
-      return (
-        <a href={url} style={styles.link}>
-          {props.children}
-        </a>
-      );
-    };
-
-    function findImageEntities(contentBlock, callback, contentState) {
-      contentBlock.findEntityRanges((character) => {
-        const entityKey = character.getEntity();
-        return (
-          entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === 'IMAGE'
-        );
-      }, callback);
-    }
-
-    const Image = (props) => {
-      const { height, src, width } = props.contentState
-        .getEntity(props.entityKey)
-        .getData();
-
-      return <img src={src} height={height} width={width} />;
-    };
-    const decorator = new CompositeDecorator([
-      {
-        strategy: findLinkEntities,
-        component: Link,
-      },
-      {
-        strategy: findImageEntities,
-        component: Image,
-      },
-    ]);
-
     this.state = {
-      editorState: EditorState.createWithContent(
-        convertFromRaw(data),
-        decorator,
-      ),
+      editorState: EditorState.createEmpty(),
     };
 
     this.focus = () => this.refs.editor.focus();
     this.onChange = (editorState) => this.setState({ editorState });
-
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.onTab = (e) => this._onTab(e);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
+  }
+
+  styles = {
+    root: {
+      fontFamily: "'Helvetica', sans-serif",
+      padding: 20,
+      width: 600,
+    },
+    editor: {
+      border: '1px solid #ccc',
+      cursor: 'text',
+      minHeight: 80,
+      padding: 10,
+    },
+    button: {
+      marginTop: 10,
+      textAlign: 'center',
+    },
+  };
+  findLinkEntities(contentBlock, callback, contentState) {
+    contentBlock.findEntityRanges((character) => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'LINK'
+      );
+    }, callback);
+  }
+
+  Link = (props) => {
+    const { url } = props.contentState.getEntity(props.entityKey).getData();
+    return (
+      <a href={url} style={this.styles.link}>
+        {props.children}
+      </a>
+    );
+  };
+
+  findImageEntities(contentBlock, callback, contentState) {
+    contentBlock.findEntityRanges((character) => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'IMAGE'
+      );
+    }, callback);
+  }
+
+  Image = (props) => {
+    const { height, src, width } = props.contentState
+      .getEntity(props.entityKey)
+      .getData();
+
+    return <img src={src} height={height} width={width} />;
+  };
+
+  decorator = new CompositeDecorator([
+    {
+      strategy: this.findLinkEntities,
+      component: this.Link,
+    },
+    {
+      strategy: this.findImageEntities,
+      component: this.Image,
+    },
+  ]);
+
+  async componentDidMount() {
+    console.log('@@@@@@@@', this.props.imagepath);
+    let convertedData = await geteditorData({
+      image_path: this.props.imagepath,
+    });
+    console.log('@@@@@@@@', convertedData);
+    if (convertedData) {
+      const contentState = convertFromRaw(convertedData);
+      this.setState({
+        editorState: EditorState.createWithContent(
+          contentState,
+          this.decorator,
+        ),
+      });
+    }
   }
 
   _handleKeyCommand(command) {

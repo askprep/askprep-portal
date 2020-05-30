@@ -98,7 +98,6 @@ class RichTextEditor extends Component {
 
   logState = () => {
     const rawContent = this.textFromRawContent();
-    console.log(rawContent);
     this.setState({
       editorJsonContent: JSON.stringify(
         convertToRaw(this.state.editorState.getCurrentContent()),

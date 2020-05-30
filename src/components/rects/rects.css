@@ -1,0 +1,21 @@
+.edit {
+	/* padding-top: 20px;	
+	padding-right: 20px; */
+	position: absolute;
+	right: 0;
+	top: -11px;
+	display: none;
+}
+
+.edit a {
+	color: #000;
+	float: right;
+}
+
+.selectedSection:hover .edit {
+	display: block;
+}
+
+.selectedSection{
+	cursor: pointer;
+}
