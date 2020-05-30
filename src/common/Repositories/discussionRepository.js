@@ -11,10 +11,10 @@ export async function getRects(obj) {
   }
 }
 
-export async function geteditorData() {
+export async function geteditorData(imagepath) {
   try {
     const endpoint = `ocr`;
-    let res = await HttpService.post(endpoint);
+    let res = await HttpService.post(endpoint, imagepath);
     return res.data;
   } catch (error) {
     return {};

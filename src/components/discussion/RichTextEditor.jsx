@@ -91,11 +91,20 @@ export default class RichTextEditor extends React.Component {
   ]);
 
   async componentDidMount() {
-    let convertedData = await geteditorData();
-    const contentState = convertFromRaw(convertedData);
-    this.setState({
-      editorState: EditorState.createWithContent(contentState, this.decorator),
+    console.log('@@@@@@@@', this.props.imagepath);
+    let convertedData = await geteditorData({
+      image_path: this.props.imagepath,
     });
+    console.log('@@@@@@@@', convertedData);
+    if (convertedData) {
+      const contentState = convertFromRaw(convertedData);
+      this.setState({
+        editorState: EditorState.createWithContent(
+          contentState,
+          this.decorator,
+        ),
+      });
+    }
   }
 
   _handleKeyCommand(command) {

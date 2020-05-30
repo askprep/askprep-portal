@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Rects from '../rects/rects';
 import { Icon, Button, Step, Grid } from 'semantic-ui-react';
 import { Pages } from './pages';
@@ -6,11 +6,15 @@ import { Pages } from './pages';
 export const Discussion = () => {
   const [currentPage, setCurrentPage] = useState('upload');
   const [imageUrl, setImageUrl] = useState(undefined);
+  const [imagepath, setImagepath] = useState(undefined);
   const [tabDisbled, settabDisbled] = useState([
     { type: 'upload', isdiabled: false, iscompleted: false, isActive: true },
     { type: 'compress', isdiabled: true, iscompleted: false, isActive: false },
     { type: 'post', isdiabled: true, iscompleted: false, isActive: false },
   ]);
+  useEffect(() => {
+    console.log('######################', imageUrl, imagepath);
+  }, [imageUrl, imagepath]);
 
   const changeSteps = () => {
     const changeSteps = [...tabDisbled];
@@ -73,6 +77,8 @@ export const Discussion = () => {
               imageUrl={imageUrl}
               tabDisbled={tabDisbled}
               settabDisbled={settabDisbled}
+              setImagepath={setImagepath}
+              imagepath={imagepath}
             />
           </Grid.Column>
         </Grid.Row>

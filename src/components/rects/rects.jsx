@@ -3,13 +3,13 @@ import { Grid, Button } from 'semantic-ui-react';
 import './rects.css';
 import { getRects } from '../../common/Repositories/discussionRepository';
 
-const Rects = (props) => {
+const Rects = ({ imageUrl, imagepath }) => {
   const [rectangleTypes, setrectangleTypes] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       let rectangles = await getRects({
-        image_path: 'C:\\Users\\animeshl913\\Downloads\\image (5).png',
+        image_path: imagepath,
       });
       setrectangleTypes(
         rectangles && rectangles.length > 0 ? [...rectangles] : [],
@@ -50,7 +50,7 @@ const Rects = (props) => {
           display: 'inline - block',
         }}
       >
-        <img src={require('./IES_Clean.jpg')} />
+        <img src={imageUrl && imageUrl.concat('?').concat(Math.random())} />
         {rectangleTypes &&
           rectangleTypes.length > 0 &&
           rectangleTypes.map((item, index) => {

@@ -4,7 +4,13 @@ import FileUploader from '../FileUploader/FileUploader';
 import RichTextEditor from './RichTextEditor';
 import Rects from '../rects/rects';
 
-export const Pages = ({ tabDisbled, setImageUrl, imageUrl }) => {
+export const Pages = ({
+  tabDisbled,
+  setImageUrl,
+  imageUrl,
+  imagepath,
+  setImagepath,
+}) => {
   return (
     <>
       <div style={{ marginLeft: '10px' }}>
@@ -19,10 +25,16 @@ export const Pages = ({ tabDisbled, setImageUrl, imageUrl }) => {
             }}
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
+            setImagepath={setImagepath}
+            imagepath={imagepath}
           />
         )}
-        {tabDisbled[1].isActive && <Rects imageUrl={imageUrl} />}
-        {tabDisbled[2].isActive && <RichTextEditor imageUrl={imageUrl} />}
+        {tabDisbled[1].isActive && (
+          <Rects imageUrl={imageUrl} imagepath={imagepath} />
+        )}
+        {tabDisbled[2].isActive && (
+          <RichTextEditor imageUrl={imageUrl} imagepath={imagepath} />
+        )}
       </div>
     </>
   );

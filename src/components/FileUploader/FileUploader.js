@@ -15,6 +15,8 @@ function FileUploader({
   onProgress,
   setImageUrl,
   imageUrl,
+  setImagepath,
+  imagepath,
 }) {
   //   const classes = useStyles();
   const [uploadPercentage, setUploadPercentage] = useState(0);
@@ -101,13 +103,14 @@ function FileUploader({
           setCustomResultMessage({
             message: 'Upload Successful',
             iconClass: 'icon circle checkmark thin',
-            // iconColorClass: classes.greenColor,
-            // imageUrl: res.data.image_path, //'https://wallpaperaccess.com/full/359168.jpg',
             height: res.data.height,
             width: res.data.width,
           });
           setContour(res.data.contour);
-          setImageUrl(res.data.image_path);
+          setImagepath(res.data.image_path);
+          setImageUrl(
+            res.data.image_path.replace('.', 'http://localhost:5000'),
+          );
         }
         setIsUploadComplete(true);
       })
@@ -130,21 +133,11 @@ function FileUploader({
     axios
       .post('http://127.0.0.1:5000/transformFile', fileData)
       .then((res) => {
-        setImageUrl(res.data.image_path);
         setIsTransformComplete(true);
       })
       .catch((err) => {
         console.log(err);
       });
-
-    // try {
-    //   const endpoint = `transformFile`;
-    //   HttpService.post(endpoint, fileData).then(function(res) {
-    //     return res.data;
-    //   });
-    // } catch (error) {
-    //   return {};
-    // }
   };
 
   return (
@@ -207,15 +200,11 @@ function FileUploader({
           }}
         >
           {isUploadComplete && (
-            <ImagePreview
-              imageUrl={imageUrl}
-              contour={contour}
-              setContour={setContour}
-            />
+            <ImagePreview contour={contour} setContour={setContour} />
           )}
         </svg>
         <img
-          src={imageUrl && imageUrl.replace('.', 'http://localhost:5000')}
+          src={imageUrl}
           style={{
             width: customResultMessage.width,
             height: customResultMessage.height,
@@ -234,7 +223,7 @@ function FileUploader({
         id="uploadFileBtn"
         onClick={transformFile({
           contour: contour,
-          image_path: imageUrl,
+          image_path: imagepath,
           max_width: svgContainerWidth,
         })}
         content="Transform"
@@ -242,13 +231,7 @@ function FileUploader({
       <br />
       {isTransformComplete && (
         <img
-          src={
-            imageUrl &&
-            imageUrl
-              .replace('.', 'http://localhost:5000')
-              .concat('?')
-              .concat(Math.random())
-          }
+          src={imageUrl && imageUrl.concat('?').concat(Math.random())}
           style={{
             width: customResultMessage.width,
             height: customResultMessage.height,
