@@ -62,11 +62,13 @@ const Header = ({ changeTheme, theme }) => {
       >
         <Container>
           <Menu.Item>
-            <Image size="mini" src={require('../../logo.svg')} />
+            <Image href="/" size="mini" src={require('../../logo.svg')} />
           </Menu.Item>
-          <Menu.Item header>Project Name</Menu.Item>
-          <Menu.Item as="a" href="/forum">
-            Forum
+          <Menu.Item as="a" href="/" header>
+            Ask-Prep
+          </Menu.Item>
+          <Menu.Item as="a" href="/discussion">
+            Discussion
           </Menu.Item>
           <Menu.Item as="a" href="/upload">
             Upload

@@ -7,7 +7,7 @@ import RichTextEditor from './common/Editor';
 import ForumLanding from './components/ForumLanding/ForumLanding';
 import { useTheme } from './hooks';
 import Header from './components/Header/header';
-import FileUploader from './components/FileUploader/FileUploader';
+import { Discussion } from './components/discussion/discussion';
 
 const App = () => {
   const [theme, changeTheme] = useTheme();
@@ -20,21 +20,9 @@ const App = () => {
           <Route exact path="/">
             <ForumLanding />
           </Route>
-          <Route path="/upload">
-            <div>
-              upload view <RichTextEditor />{' '}
-            </div>
-          </Route>
-          <Route path="/forum">
-            <FileUploader
-              validExtensionList=".jpg"
-              uploadUrl="http://127.0.0.1:5000/fileUpload"
-              uploaderText={{
-                titleText:
-                  'Click here to select the file or drag and drop the selected file.',
-                allowdFileText: 'Allowed file type is',
-              }}
-            />
+          <Route path="/upload"></Route>
+          <Route path="/discussion">
+            <Discussion />
           </Route>
         </Switch>
       </ThemeProvider>

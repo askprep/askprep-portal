@@ -5,28 +5,6 @@ import axios from 'axios';
 // import ButtonBasic from 'rdx/build/elements/Buttons/Button';
 import { Icon, Progress, Button } from 'semantic-ui-react';
 import ImagePreview from '../ImagePreview/ImagePreview';
-import HttpService from '../../common/HttpService';
-
-
-// const useStyles = createUseStyles({
-//   dropzone: {
-//     border: '.17em dashed #ccc',
-//     padding: '1em',
-//     color: 'grey',
-//   },
-//   marginBottom: {
-//     marginBottom: '.5em',
-//   },
-//   marginTop: {
-//     marginTop: '1em',
-//   },
-//   greenColor: {
-//     color: 'green',
-//   },
-//   redColor: {
-//     color: 'red',
-//   },
-// });
 
 function FileUploader({
   uploadUrl,
@@ -35,8 +13,10 @@ function FileUploader({
   onSuccess,
   onFailure,
   onProgress,
+  setImageUrl,
+  imageUrl,
 }) {
-//   const classes = useStyles();
+  //   const classes = useStyles();
   const [uploadPercentage, setUploadPercentage] = useState(0);
   const [acceptedFiles, setAcceptedFiles] = useState([]);
   const [customResultMessage, setCustomResultMessage] = useState({
@@ -45,7 +25,7 @@ function FileUploader({
     // iconColorClass: '',
     // imageUrl: undefined,
   });
-  const [imageUrl, setImageUrl] = useState(undefined);
+
   const [contour, setContour] = useState(undefined);
   const [isUploadDisabled, setIsUploadDisabled] = useState(true);
   const [isUploadComplete, setIsUploadComplete] = useState(false);
@@ -96,7 +76,7 @@ function FileUploader({
     formData.append('max_width', svgContainerWidth);
 
     axios
-    //   .post(`/${uploadUrl}`, formData, {
+      //   .post(`/${uploadUrl}`, formData, {
       .post(uploadUrl, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -167,14 +147,13 @@ function FileUploader({
     // }
   };
 
-
   return (
     <>
       <div
         {...getRootProps()}
         className="dropzone marginBottom"
         data-testid="fileUploaderDiv"
-        style={{border: '.17em dashed #fff', color: 'grey', padding: '1em' }}
+        style={{ border: '.17em dashed #fff', color: 'grey', padding: '1em' }}
       >
         <input {...getInputProps()} />
         {isDragActive ? (
@@ -219,38 +198,66 @@ function FileUploader({
       ) : (
         ''
       )} */}
-      <div ref={svgContainer} style={{position: 'relative'}}>
+      <div ref={svgContainer} style={{ position: 'relative' }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          style={{width: customResultMessage.width, height: customResultMessage.height,}}
+          style={{
+            width: customResultMessage.width,
+            height: customResultMessage.height,
+          }}
         >
           {isUploadComplete && (
-            <ImagePreview imageUrl={imageUrl} contour= {contour} setContour={setContour} />
+            <ImagePreview
+              imageUrl={imageUrl}
+              contour={contour}
+              setContour={setContour}
+            />
           )}
         </svg>
         <img
           src={imageUrl && imageUrl.replace('.', 'http://localhost:5000')}
-          style={{width: customResultMessage.width, height: customResultMessage.height, position: 'absolute', left: 0, zIndex: '-1111'}}
+          style={{
+            width: customResultMessage.width,
+            height: customResultMessage.height,
+            position: 'absolute',
+            left: 0,
+            zIndex: '-1111',
+          }}
         />
       </div>
-      
+
       <Button
-          size="small"
-          secondary
-          basic
-          type="submit"
-          id="uploadFileBtn"
-          onClick={transformFile({contour: contour, image_path: imageUrl, max_width: svgContainerWidth})}
-          content="Transform"
+        size="small"
+        secondary
+        basic
+        type="submit"
+        id="uploadFileBtn"
+        onClick={transformFile({
+          contour: contour,
+          image_path: imageUrl,
+          max_width: svgContainerWidth,
+        })}
+        content="Transform"
+      />
+      <br />
+      {isTransformComplete && (
+        <img
+          src={
+            imageUrl &&
+            imageUrl
+              .replace('.', 'http://localhost:5000')
+              .concat('?')
+              .concat(Math.random())
+          }
+          style={{
+            width: customResultMessage.width,
+            height: customResultMessage.height,
+            position: 'absolute',
+            left: 0,
+            zIndex: '-1111',
+          }}
         />
-        <br/>
-        {(isTransformComplete) &&
-          <img
-            src={imageUrl && imageUrl.replace('.', 'http://localhost:5000').concat("?").concat(Math.random())}
-            style={{width: customResultMessage.width, height: customResultMessage.height, position: 'absolute', left: 0, zIndex: '-1111'}}
-          />
-        }
-      
+      )}
     </>
   );
 }
