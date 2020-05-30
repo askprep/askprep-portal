@@ -17,3 +17,29 @@ code {
 .dark-mode {
   background-color: #000;
 }
+
+circle {
+  fill: lightgreen;
+  stroke: green;
+  stroke-width: 2px;
+  fill-opacity: 0.5;
+}
+
+path {
+  fill: #ffb7b3;
+  stroke: #ff4736;
+  stroke-width: 5px;
+}
+
+polygon {
+  fill: #b6eeff;
+  fill-opacity: 0.5;
+  stroke: #0067ff;
+  stroke-width: 2px;
+}
+
+line {
+  fill: none;
+  stroke: #cd08ff;
+  stroke-width: 2px;
+}

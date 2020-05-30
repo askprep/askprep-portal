@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
- Card, Icon, Image, Label,
-} from 'semantic-ui-react';
+import { Card, Icon, Image, Label } from 'semantic-ui-react';
+import FileUploader from '../FileUploader/FileUploader';
+import ImagePreview from '../ImagePreview/ImagePreview';
 
 export const StyledCard = styled(Card)`
   &:hover {
@@ -99,51 +99,51 @@ export const StyledCard = styled(Card)`
 
 const QuestionPreviewFeed = () => {
   return (
-    <StyledCard fluid>
-      <Card.Content target="_blank" href="www.google.com">
-        <div className="imageContainer">
-          <p className="stat-count">50</p>
-          <p className="stat-description">views</p>
-        </div>
-        <div className="imageContainer">
-          <p className="stat-count">4</p>
-          <p className="stat-description">answers</p>
-        </div>
+    <>
+      <StyledCard fluid>
+        <Card.Content target="_blank" href="www.google.com">
+          <div className="imageContainer">
+            <p className="stat-count">50</p>
+            <p className="stat-description">views</p>
+          </div>
+          <div className="imageContainer">
+            <p className="stat-count">4</p>
+            <p className="stat-description">answers</p>
+          </div>
 
-        <Label className="category-info" image>
-          <Icon name="laptop" />
-          <span>Computer Sc & engg</span>
-        </Label>
+          <Label className="category-info" image>
+            <Icon name="laptop" />
+            <span>Computer Sc & engg</span>
+          </Label>
 
-        <div className="url-heading">What is an Abstract Data Type?</div>
-        <Card.Meta>
-          Explain abstract data type with suitable examples.Define abstract data
-          type for Stack
-        </Card.Meta>
-        <Label color="black" className="tag-container">
-          <Icon name="clipboard outline" />
-          <Label.Detail className="tag-link">JU</Label.Detail>
-          <Label.Detail className="tag-link">MAUKAT</Label.Detail>
-          <Label.Detail className="tag-link">IIT BHU</Label.Detail>
-          <Label.Detail className="tag-link">BITS Pilani</Label.Detail>
-        </Label>
+          <div className="url-heading">What is an Abstract Data Type?</div>
+          <Card.Meta>
+            Explain abstract data type with suitable examples.Define abstract
+            data type for Stack
+          </Card.Meta>
+          <Label color="black" className="tag-container">
+            <Icon name="clipboard outline" />
+            <Label.Detail className="tag-link">JU</Label.Detail>
+            <Label.Detail className="tag-link">MAUKAT</Label.Detail>
+            <Label.Detail className="tag-link">IIT BHU</Label.Detail>
+            <Label.Detail className="tag-link">BITS Pilani</Label.Detail>
+          </Label>
 
-        <Label className="subject-info" image>
-          <Icon name="laptop" />
-          <span>DS & Algo</span>
-        </Label>
-        <Label className="user-info" image>
-          <Image
-            avatar
-            spaced="right"
-            src="https://byblobstorage.blob.core.windows.net/bmby/htmlrockscomentutorialsspeedquick.png"
-          />
-          <span>Ayan Lohar</span>
-          {' '}
-          asked on 12 Apr 2020
-        </Label>
-      </Card.Content>
-    </StyledCard>
+          <Label className="subject-info" image>
+            <Icon name="laptop" />
+            <span>DS & Algo</span>
+          </Label>
+          <Label className="user-info" image>
+            <Image
+              avatar
+              spaced="right"
+              src="https://byblobstorage.blob.core.windows.net/bmby/htmlrockscomentutorialsspeedquick.png"
+            />
+            <span>Ayan Lohar</span> asked on 12 Apr 2020
+          </Label>
+        </Card.Content>
+      </StyledCard>
+    </>
   );
 };
 
