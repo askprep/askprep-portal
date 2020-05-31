@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Grid } from 'semantic-ui-react';
 import FileUploader from '../FileUploader/FileUploader';
 import RichTextEditor from './RichTextEditor';
 import Rects from '../rects/rects';
@@ -11,6 +10,9 @@ export const Pages = ({
   imagepath,
   setImagepath,
 }) => {
+  const [transformImagewidth, settransformImagewidth] = useState(null);
+  const [rectangels, setRectangels] = useState(null);
+
   return (
     <>
       <div style={{ marginLeft: '10px' }}>
@@ -30,10 +32,21 @@ export const Pages = ({
           />
         )}
         {tabDisbled[1].isActive && (
-          <Rects imageUrl={imageUrl} imagepath={imagepath} />
+          <Rects
+            settransformImagewidth={settransformImagewidth}
+            imageUrl={imageUrl}
+            imagepath={imagepath}
+            setRectangels={setRectangels}
+            rectangels={rectangels}
+          />
         )}
         {tabDisbled[2].isActive && (
-          <RichTextEditor imageUrl={imageUrl} imagepath={imagepath} />
+          <RichTextEditor
+            rectangels={rectangels}
+            transformImagewidth={transformImagewidth}
+            imageUrl={imageUrl}
+            imagepath={imagepath}
+          />
         )}
       </div>
     </>

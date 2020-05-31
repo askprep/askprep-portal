@@ -1,41 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import './rects.css';
 import { getRects } from '../../common/Repositories/discussionRepository';
 
-const Rects = ({ imageUrl, imagepath }) => {
-  const [rectangleTypes, setrectangleTypes] = useState([]);
-
+const Rects = ({
+  imageUrl,
+  imagepath,
+  settransformImagewidth,
+  rectangels,
+  setRectangels,
+}) => {
+  const transformedImageContainer = useRef(null);
   useEffect(() => {
+    settransformImagewidth(transformedImageContainer.current.offsetWidth);
     async function fetchData() {
-      let rectangles = await getRects({
+      let rectanglesarray = await getRects({
         image_path: imagepath,
+        max_width: transformedImageContainer.current.offsetWidth,
       });
-      setrectangleTypes(
-        rectangles && rectangles.length > 0 ? [...rectangles] : [],
+      setRectangels(
+        rectanglesarray && rectanglesarray.length > 0
+          ? [...rectanglesarray]
+          : [],
       );
     }
     fetchData();
   }, []);
+
   const changeType = (type, index) => {
     switch (type) {
       case 'image':
-        setrectangleTypes([
-          ...rectangleTypes,
-          (rectangleTypes[index].type = 'image'),
-        ]);
+        setRectangels([...rectangels, (rectangels[index].type = 'image')]);
         break;
       case 'text':
-        setrectangleTypes([
-          ...rectangleTypes,
-          (rectangleTypes[index].type = 'text'),
-        ]);
+        setRectangels([...rectangels, (rectangels[index].type = 'text')]);
         break;
       case 'remove':
-        setrectangleTypes([
-          ...rectangleTypes,
-          (rectangleTypes[index].type = ''),
-        ]);
+        setRectangels([...rectangels, (rectangels[index].type = '')]);
         break;
 
       default:
@@ -45,15 +46,22 @@ const Rects = ({ imageUrl, imagepath }) => {
   return (
     <Grid.Column width={4}>
       <div
+        ref={transformedImageContainer}
         style={{
+          width: '50%',
           position: 'relative',
           display: 'inline - block',
         }}
       >
-        <img src={imageUrl && imageUrl.concat('?').concat(Math.random())} />
-        {rectangleTypes &&
-          rectangleTypes.length > 0 &&
-          rectangleTypes.map((item, index) => {
+        <img
+          style={{
+            width: '100%',
+          }}
+          src={imageUrl && imageUrl.concat('?').concat(Math.random())}
+        />
+        {rectangels &&
+          rectangels.length > 0 &&
+          rectangels.map((item, index) => {
             return (
               <>
                 <div
