@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card, Icon, Image, Label } from 'semantic-ui-react';
-import FileUploader from '../FileUploader/FileUploader';
-import ImagePreview from '../ImagePreview/ImagePreview';
+import { Discussion } from '../discussion/discussion';
 
 export const StyledCard = styled(Card)`
   &:hover {
@@ -143,6 +142,7 @@ const QuestionPreviewFeed = () => {
           </Label>
         </Card.Content>
       </StyledCard>
+      <Discussion />
     </>
   );
 };
