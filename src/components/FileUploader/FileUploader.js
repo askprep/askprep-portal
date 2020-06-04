@@ -5,9 +5,9 @@ import axios from 'axios';
 // import ButtonBasic from 'rdx/build/elements/Buttons/Button';
 import { Icon, Progress, Button } from 'semantic-ui-react';
 import ImagePreview from '../ImagePreview/ImagePreview';
+import { imageTransform } from '../../common/Repositories/discussionRepository';
 
 function FileUploader({
-  uploadUrl,
   validExtensionList,
   uploaderText,
   onSuccess,
@@ -78,8 +78,7 @@ function FileUploader({
     formData.append('max_width', svgContainerWidth);
 
     axios
-      //   .post(`/${uploadUrl}`, formData, {
-      .post(uploadUrl, formData, {
+      .post(`${window.API_HOST_OCR}/fileUpload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Access-Control-Allow-Origin': '*',
@@ -128,16 +127,18 @@ function FileUploader({
       });
   };
 
-  const transformFile = (fileData) => () => {
-    setIsTransformComplete(false);
-    axios
-      .post('http://127.0.0.1:5000/transformFile', fileData)
-      .then((res) => {
+  const transformFile = (fileData) => async () => {
+    try {
+      let transformImage = await imageTransform(fileData);
+      if (transformImage) {
         setIsTransformComplete(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      } else {
+        setIsTransformComplete(false);
+      }
+    } catch (error) {
+      setIsTransformComplete(false);
+      console.log(error);
+    }
   };
 
   return (

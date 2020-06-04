@@ -1,12 +1,18 @@
 import Axios from 'axios';
-
-export const API_HOST = 'http://localhost:8080/';
-
-const HttpService = Axios.create({
+const API_HOST = window.API_HOST;
+const API_OCR_Node_HOST = window.API_HOST_NODE;
+const API_OCR_PYTHON_HOST = window.API_HOST_OCR;
+export const HttpNodeService = Axios.create({
   baseURL: `${API_HOST.replace(/\/$/, '')}/`,
   headers: {
     Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
   },
 });
 
-export default HttpService;
+export const OCRNodeService = Axios.create({
+  baseURL: `${API_OCR_Node_HOST.replace(/\/$/, '')}/`,
+});
+
+export const OCRPythonService = Axios.create({
+  baseURL: `${API_OCR_PYTHON_HOST.replace(/\/$/, '')}/`,
+});

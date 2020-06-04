@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import Theme from './themes';
 import { GlobalStyles } from './themes/global';
-import RichTextEditor from './common/Editor';
+import RichTextEditor from './components/discussion/RichTextEditor';
 import ForumLanding from './components/ForumLanding/ForumLanding';
 import { useTheme } from './hooks';
 import Header from './components/Header/header';

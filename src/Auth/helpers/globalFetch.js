@@ -2,7 +2,7 @@ import axios from 'axios';
 import SessionStorageService from '../../common/Services/session-storage.service';
 import { AuthorizationRepository } from '../../common/Repositories/authorizationRepository';
 
-const API_HOST = window.API_HOST ? window.API_HOST : 'http://localhost:7070/';
+const API_HOST = window.API_HOST;
 export default class Axios_Setup {
   _authorizationRepo;
 
