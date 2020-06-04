@@ -1,4 +1,4 @@
-const API_HOST = window.API_HOST ? window.API_HOST : 'http://localhost:7070/';
+const API_HOST = window.API_HOST;
 
 const OPENAM_LOGOUT_URL = window.LOGOUT_URL
   ? window.LOGOUT_URL

@@ -19,7 +19,6 @@ export const Pages = ({
         {tabDisbled[0].isActive && (
           <FileUploader
             validExtensionList=".jpg"
-            uploadUrl="http://127.0.0.1:5000/fileUpload"
             uploaderText={{
               titleText:
                 'Click here to select the file or drag and drop the selected file.',
