@@ -20,7 +20,9 @@ const App = () => {
           <Route exact path="/">
             <ForumLanding />
           </Route>
-          <Route path="/upload"></Route>
+          <Route path="/upload">
+            <RichTextEditor />
+          </Route>
           <Route path="/discussion">
             <Discussion />
           </Route>

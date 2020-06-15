@@ -100,4 +100,3 @@ export const Discussion = () => {
     </>
   );
 };
-//  currentPage === 'rects' ? <Rects /> : <RichTextEditor />;
