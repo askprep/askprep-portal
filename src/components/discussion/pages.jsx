@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FileUploader from '../FileUploader/FileUploader';
 import RichTextEditor from './RichTextEditor';
 import Rects from '../rects/rects';
-
+import { DiscussionForm } from './formDIscussion';
 export const Pages = ({
   tabDisbled,
   setImageUrl,
@@ -40,7 +40,7 @@ export const Pages = ({
           />
         )}
         {tabDisbled[2].isActive && (
-          <RichTextEditor
+          <DiscussionForm
             rectangels={rectangels}
             transformImagewidth={transformImagewidth}
             imageUrl={imageUrl}

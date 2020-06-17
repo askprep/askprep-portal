@@ -1,4 +1,8 @@
-import { OCRNodeService, OCRPythonService } from '../HttpService';
+import {
+  OCRNodeService,
+  OCRPythonService,
+  HttpNodeService,
+} from '../HttpService';
 
 export async function getRects(obj) {
   try {
@@ -28,6 +32,20 @@ export async function imageTransform(imageObj) {
     const endpoint = `transformFile`;
     let res = await OCRPythonService.post(endpoint, imageObj);
     return res.data;
+  } catch (error) {
+    return {};
+  }
+}
+
+/**
+ * API for fetch user
+ */
+export async function getAlldrpDownValues() {
+  try {
+    const endpoint = `getAlldrpDownValues`;
+    return await HttpNodeService.get(endpoint).then(function(res) {
+      return res.data;
+    });
   } catch (error) {
     return {};
   }

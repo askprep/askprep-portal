@@ -8,6 +8,7 @@ import ForumLanding from './components/ForumLanding/ForumLanding';
 import { useTheme } from './hooks';
 import Header from './components/Header/header';
 import { Discussion } from './components/discussion/discussion';
+import { DiscussionForm } from './components/discussion/formDIscussion';
 
 const App = () => {
   const [theme, changeTheme] = useTheme();
@@ -21,7 +22,7 @@ const App = () => {
             <ForumLanding />
           </Route>
           <Route path="/upload">
-            <RichTextEditor />
+            <DiscussionForm />
           </Route>
           <Route path="/discussion">
             <Discussion />

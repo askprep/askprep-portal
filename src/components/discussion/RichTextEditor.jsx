@@ -407,7 +407,7 @@ const InlineStyleControls = (props) => {
           color: 'black',
           fontSize: 'large',
         }}
-        class="image outline link icon"
+        className="image outline link icon"
       ></i>
       <input
         hidden
