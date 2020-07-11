@@ -5,149 +5,95 @@ import {
   RichUtils,
   AtomicBlockUtils,
   convertFromRaw,
-  Modifier,
-  convertToRaw,
+  Editor,
 } from 'draft-js';
-import { stateFromHTML } from 'draft-js-import-html';
-import Editor, { composeDecorators } from 'draft-js-plugins-editor';
-import createEmojiPlugin from 'draft-js-emoji-plugin';
-import createImagePlugin from 'draft-js-image-plugin';
-import createAlignmentPlugin from 'draft-js-alignment-plugin';
-import createFocusPlugin from 'draft-js-focus-plugin';
-import createResizeablePlugin from 'draft-js-resizeable-plugin';
-import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
+import { Image } from 'semantic-ui-react'
 import 'draft-js/dist/Draft.css';
 import './discussion.css';
-import 'draft-js-emoji-plugin/lib/plugin.css';
-import { geteditorData } from '../../common/Repositories/discussionRepository';
-
-const emojiPlugin = createEmojiPlugin();
-const focusPlugin = createFocusPlugin();
-const resizeablePlugin = createResizeablePlugin();
-const blockDndPlugin = createBlockDndPlugin();
-const alignmentPlugin = createAlignmentPlugin();
-const decorator = composeDecorators(
-  resizeablePlugin.decorator,
-  alignmentPlugin.decorator,
-  focusPlugin.decorator,
-  blockDndPlugin.decorator,
-);
-const imagePlugin = createImagePlugin({ decorator });
-const { EmojiSuggestions } = emojiPlugin;
-const { AlignmentTool } = alignmentPlugin;
-const plugins = [
-  emojiPlugin,
-  blockDndPlugin,
-  focusPlugin,
-  alignmentPlugin,
-  resizeablePlugin,
-  imagePlugin,
-];
+import { data } from './sample';
 
 export default class RichTextEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      editorState: EditorState.createEmpty(),
+    this.handleKeyCommand = (command) => this._handleKeyCommand(command);
+    const styles = {
+      root: {
+        fontFamily: "'Helvetica', sans-serif",
+        padding: 20,
+        width: 600,
+      },
+      editor: {
+        border: '1px solid #ccc',
+        cursor: 'text',
+        minHeight: 80,
+        padding: 10,
+      },
+      button: {
+        marginTop: 10,
+        textAlign: 'center',
+      },
+    };
+    function findLinkEntities(contentBlock, callback, contentState) {
+      contentBlock.findEntityRanges((character) => {
+        const entityKey = character.getEntity();
+        return (
+          entityKey !== null &&
+          contentState.getEntity(entityKey).getType() === 'LINK'
+        );
+      }, callback);
+    }
+
+    const Link = (props) => {
+      const { url } = props.contentState.getEntity(props.entityKey).getData();
+      return (
+        <a href={url} style={styles.link}>
+          {props.children}
+        </a>
+      );
     };
 
-    this.focus = () => this.editor.focus();
-    this.onChange = (editorState) =>
-      this.setState({ editorState }, () => {
-        this.logState();
-      });
+    function findImageEntities(contentBlock, callback, contentState) {
+      contentBlock.findEntityRanges((character) => {
+        const entityKey = character.getEntity();
+        return (
+          entityKey !== null &&
+          contentState.getEntity(entityKey).getType() === 'IMAGE'
+        );
+      }, callback);
+    }
+
+    const Image = (props) => {
+      const { height, src, width } = props.contentState
+        .getEntity(props.entityKey)
+        .getData();
+
+      return <img src={src} height={height} width={width} />;
+    };
+    const decorator = new CompositeDecorator([
+      {
+        strategy: findLinkEntities,
+        component: Link,
+      },
+      {
+        strategy: findImageEntities,
+        component: Image,
+      },
+    ]);
+
+    this.state = {
+      editorState: EditorState.createWithContent(
+        convertFromRaw(data),
+        decorator,
+      ),
+    };
+
+    this.focus = () => this.refs.editor.focus();
+    this.onChange = (editorState) => this.setState({ editorState });
+
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.onTab = (e) => this._onTab(e);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
-    this.handlePastedText = (text, html) => this._handlePastedText(text, html);
-  }
-
-  styles = {
-    root: {
-      fontFamily: "'Helvetica', sans-serif",
-      padding: 20,
-      width: 600,
-    },
-    editor: {
-      border: '1px solid #ccc',
-      cursor: 'text',
-      minHeight: 80,
-      padding: 10,
-    },
-    button: {
-      marginTop: 10,
-      textAlign: 'center',
-    },
-  };
-  findLinkEntities(contentBlock, callback, contentState) {
-    contentBlock.findEntityRanges((character) => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === 'LINK'
-      );
-    }, callback);
-  }
-
-  Link = (props) => {
-    const { url } = props.contentState.getEntity(props.entityKey).getData();
-    return (
-      <a href={url} style={this.styles.link}>
-        {props.children}
-      </a>
-    );
-  };
-
-  findImageEntities(contentBlock, callback, contentState) {
-    contentBlock.findEntityRanges((character) => {
-      const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === 'IMAGE'
-      );
-    }, callback);
-  }
-
-  Image = (props) => {
-    const { height, src, width } = props.contentState
-      .getEntity(props.entityKey)
-      .getData();
-
-    return <img src={src} height={height} width={width} />;
-  };
-
-  decorator = new CompositeDecorator([
-    {
-      strategy: this.findLinkEntities,
-      component: this.Link,
-    },
-    {
-      strategy: this.findImageEntities,
-      component: this.Image,
-    },
-  ]);
-
-  async componentDidMount() {
-    if (this.props.rectangels) {
-      let convertedData = await geteditorData({
-        image_path: this.props.imagepath,
-        rectangels: this.props.rectangels,
-        max_width: this.props.transformImagewidth,
-      });
-      if (convertedData) {
-        const contentState = convertFromRaw(convertedData);
-        this.setState(
-          {
-            editorState: EditorState.createWithContent(
-              contentState,
-              this.decorator,
-            ),
-          },
-          () => this.logState(),
-        );
-      }
-    }
   }
 
   _handleKeyCommand(command) {
@@ -160,11 +106,6 @@ export default class RichTextEditor extends React.Component {
     return false;
   }
 
-  logState = () => {
-    const content = this.state.editorState.getCurrentContent();
-    const rawContent = convertToRaw(content);
-    console.log(rawContent);
-  };
   _onTab(e) {
     const maxDepth = 4;
     this.onChange(RichUtils.onTab(e, this.state.editorState, maxDepth));
@@ -186,6 +127,7 @@ export default class RichTextEditor extends React.Component {
     }
   };
 
+  // ThemedImage = props => <Image {...props} theme={theme} />;
   insertImage(editorState, base64) {
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
@@ -220,37 +162,23 @@ export default class RichTextEditor extends React.Component {
     });
   };
 
-  //   _handlePastedText(text, html, editorState) {
-  //     this._handleChange(
-  //       EditorState.push(
-  //         this.state.editorState,
-  //         Modifier.replaceText(
-  //           this.state.editorState.getCurrentContent(),
-  //           this.state.editorState.getSelection(),
-  //           text.replace(/\n/g, ' '),
-  //         ),
-  //       ),
-  //     );
-  //     return 'handled';
-  //   }
-  //   _handleChange = (editorState) => {
-  //     this.setState({ editorState });
-  //   };
-  _handlePastedText = (text, html) => {
-    // if they try to paste something they shouldn't let's handle it
-    const blockMap = stateFromHTML(html).blockMap;
-    const newContent = Modifier.insertText(
-      this.state.editorState.getCurrentContent(),
-      this.state.editorState.getSelection(),
-      blockMap,
-    );
+  myBlockRenderer = (block) => {
+    if (block.getType() === 'atomic') {
+      const contentState = this.state.editorState.getCurrentContent();
+      const entity = block.getEntityAt(0);
+      if (!entity) return null;
+      const type = contentState.getEntity(entity).getType();
+      if (type === 'IMAGE' || type === 'image') {
+        return {
+          component: MediaComponent,
+          editable: false,
+        };
+      }
+      return null;
+    }
 
-    // update our state with the new editor content
-    this.onChange(
-      EditorState.push(this.state.editorState, newContent, 'insert-characters'),
-    );
-    return true;
-  };
+    return null;
+  }
 
   render() {
     const { editorState } = this.state;
@@ -283,19 +211,19 @@ export default class RichTextEditor extends React.Component {
           editorState={editorState}
           onToggle={this.toggleInlineStyle}
         />
-
         <div className={className} onClick={this.focus}>
           <Editor
-            editorState={this.state.editorState}
+            blockStyleFn={getBlockStyle}
+            customStyleMap={styleMap}
+            editorState={editorState}
+            handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
-            plugins={plugins}
-            ref={(element) => {
-              this.editor = element;
-            }}
-            handleDroppedFiles={this.handlePastedText}
+            onTab={this.onTab}
+            placeholder="Submit a Question..."
+            ref="editor"
+            spellCheck={true}
+            blockRendererFn={this.myBlockRenderer}
           />
-          <EmojiSuggestions />
-          {/* <AlignmentTool /> */}
         </div>
       </div>
     );
@@ -420,3 +348,19 @@ const InlineStyleControls = (props) => {
     </div>
   );
 };
+
+
+class MediaComponent extends React.Component {
+  render() {
+    const { src } = this.props.contentState.getEntity(this.props.block.getEntityAt(0)).getData();
+    // const {block, contentState} = this.props;
+    // const {foo} = this.props.blockProps;
+    // const data = contentState.getEntity(block.getEntityAt(0)).getData();
+    // // Return a <figure> or some other content using this data.
+    return (
+      <figure>
+        <img src={src} />
+      </figure>
+    )
+  }
+}
