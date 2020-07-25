@@ -3,12 +3,46 @@ import {
   CompositeDecorator,
   EditorState,
   RichUtils,
-  Editor,
+  AtomicBlockUtils,
   convertFromRaw,
+  Modifier,
+  convertToRaw,
 } from 'draft-js';
+import { stateFromHTML } from 'draft-js-import-html';
+import Editor, { composeDecorators } from 'draft-js-plugins-editor';
+import createEmojiPlugin from 'draft-js-emoji-plugin';
+import createImagePlugin from 'draft-js-image-plugin';
+import createAlignmentPlugin from 'draft-js-alignment-plugin';
+import createFocusPlugin from 'draft-js-focus-plugin';
+import createResizeablePlugin from 'draft-js-resizeable-plugin';
+import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import 'draft-js/dist/Draft.css';
 import './discussion.css';
+import 'draft-js-emoji-plugin/lib/plugin.css';
 import { geteditorData } from '../../common/Repositories/discussionRepository';
+
+const emojiPlugin = createEmojiPlugin();
+const focusPlugin = createFocusPlugin();
+const resizeablePlugin = createResizeablePlugin();
+const blockDndPlugin = createBlockDndPlugin();
+const alignmentPlugin = createAlignmentPlugin();
+const decorator = composeDecorators(
+  resizeablePlugin.decorator,
+  alignmentPlugin.decorator,
+  focusPlugin.decorator,
+  blockDndPlugin.decorator,
+);
+const imagePlugin = createImagePlugin({ decorator });
+const { EmojiSuggestions } = emojiPlugin;
+const { AlignmentTool } = alignmentPlugin;
+const plugins = [
+  emojiPlugin,
+  blockDndPlugin,
+  focusPlugin,
+  alignmentPlugin,
+  resizeablePlugin,
+  imagePlugin,
+];
 
 export default class RichTextEditorOld extends React.Component {
   constructor(props) {
@@ -17,12 +51,16 @@ export default class RichTextEditorOld extends React.Component {
       editorState: EditorState.createEmpty(),
     };
 
-    this.focus = () => this.refs.editor.focus();
-    this.onChange = (editorState) => this.setState({ editorState });
+    this.focus = () => this.editor.focus();
+    this.onChange = (editorState) =>
+      this.setState({ editorState }, () => {
+        this.logState();
+      });
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.onTab = (e) => this._onTab(e);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
+    this.handlePastedText = (text, html) => this._handlePastedText(text, html);
   }
 
   styles = {
@@ -99,12 +137,15 @@ export default class RichTextEditorOld extends React.Component {
       });
       if (convertedData) {
         const contentState = convertFromRaw(convertedData);
-        this.setState({
-          editorState: EditorState.createWithContent(
-            contentState,
-            this.decorator,
-          ),
-        });
+        this.setState(
+          {
+            editorState: EditorState.createWithContent(
+              contentState,
+              this.decorator,
+            ),
+          },
+          () => this.logState(),
+        );
       }
     }
   }
@@ -119,6 +160,11 @@ export default class RichTextEditorOld extends React.Component {
     return false;
   }
 
+  logState = () => {
+    const content = this.state.editorState.getCurrentContent();
+    const rawContent = convertToRaw(content);
+    console.log(rawContent);
+  };
   _onTab(e) {
     const maxDepth = 4;
     this.onChange(RichUtils.onTab(e, this.state.editorState, maxDepth));
@@ -133,6 +179,79 @@ export default class RichTextEditorOld extends React.Component {
       RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle),
     );
   }
+  handleClick = () => {
+    const input = document.getElementById('imgupload');
+    if (input) {
+      input.click();
+    }
+  };
+
+  insertImage(editorState, base64) {
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'image',
+      'IMMUTABLE',
+      { src: base64 },
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, {
+      currentContent: contentStateWithEntity,
+    });
+    this.onChange(
+      AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '),
+    );
+  }
+
+  addImage = async (event) => {
+    const base64 = await this.convertTobase64(event.target.files[0]);
+    console.log('############ Base64: ##############', base64);
+    this.insertImage(this.state.editorState, base64);
+  };
+
+  convertTobase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function() {
+        resolve(reader.result);
+      };
+      reader.onerror = function(error) {
+        reject(error);
+      };
+    });
+  };
+
+  // _handlePastedText(text, html, editorState) {
+  //   this._handleChange(
+  //     EditorState.push(
+  //       this.state.editorState,
+  //       Modifier.replaceText(
+  //         this.state.editorState.getCurrentContent(),
+  //         this.state.editorState.getSelection(),
+  //         text.replace(/\n/g, ' '),
+  //       ),
+  //     ),
+  //   );
+  //   return 'handled';
+  // }
+  _handleChange = (editorState) => {
+    this.setState({ editorState });
+  };
+  _handlePastedText = (text, html) => {
+    // if they try to paste something they shouldn't let's handle it
+    const blockMap = stateFromHTML(html).blockMap;
+    const newContent = Modifier.insertText(
+      this.state.editorState.getCurrentContent(),
+      this.state.editorState.getSelection(),
+      blockMap,
+    );
+
+    // update our state with the new editor content
+    this.onChange(
+      EditorState.push(this.state.editorState, newContent, 'insert-characters'),
+    );
+    return true;
+  };
 
   render() {
     const { editorState } = this.state;
@@ -158,22 +277,27 @@ export default class RichTextEditorOld extends React.Component {
           editorState={editorState}
           onToggle={this.toggleBlockType}
         />
+
         <InlineStyleControls
+          handleClick={this.handleClick}
+          addImage={this.addImage}
           editorState={editorState}
           onToggle={this.toggleInlineStyle}
         />
+
         <div className={className} onClick={this.focus}>
           <Editor
-            blockStyleFn={getBlockStyle}
-            customStyleMap={styleMap}
-            editorState={editorState}
-            handleKeyCommand={this.handleKeyCommand}
+            editorState={this.state.editorState}
             onChange={this.onChange}
-            onTab={this.onTab}
-            placeholder="Submit a Question..."
-            ref="editor"
-            spellCheck={true}
+            plugins={plugins}
+            ref={(element) => {
+              this.editor = element;
+            }}
+            handleDroppedFiles={this.handlePastedText}
+            handlePastedText={this.handlePastedText}
           />
+          <EmojiSuggestions />
+          {/* <AlignmentTool /> */}
         </div>
       </div>
     );
@@ -278,6 +402,23 @@ const InlineStyleControls = (props) => {
           style={type.style}
         />
       ))}
+      <i
+        onClick={props.handleClick}
+        aria-hidden="true"
+        style={{
+          color: 'black',
+          fontSize: 'large',
+        }}
+        className="image outline link icon"
+      ></i>
+      <input
+        hidden
+        type="file"
+        id="imgupload"
+        name="img"
+        accept="image/*"
+        onChange={props.addImage.bind(this)}
+      ></input>
     </div>
   );
 };

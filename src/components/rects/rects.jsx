@@ -28,15 +28,16 @@ const Rects = ({
   }, []);
 
   const changeType = (type, index) => {
+    let copyRectangels = [...rectangels];
     switch (type) {
       case 'image':
-        setRectangels([...rectangels, (rectangels[index].type = 'image')]);
+        setRectangels(copyRectangels, (copyRectangels[index].type = 'image'));
         break;
       case 'text':
-        setRectangels([...rectangels, (rectangels[index].type = 'text')]);
+        setRectangels(copyRectangels, (copyRectangels[index].type = 'text'));
         break;
       case 'remove':
-        setRectangels([...rectangels, (rectangels[index].type = '')]);
+        setRectangels(copyRectangels, (copyRectangels[index].type = ''));
         break;
 
       default:

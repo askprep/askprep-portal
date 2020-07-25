@@ -50,3 +50,25 @@ export async function getAlldrpDownValues() {
     return {};
   }
 }
+
+export async function postQuestion(data) {
+  try {
+    const endpoint = `discussion/newDiscussion`;
+    return await HttpNodeService.post(endpoint, data).then(function(res) {
+      return res.data;
+    });
+  } catch (error) {
+    return {};
+  }
+}
+
+export async function getQuestions() {
+  try {
+    const endpoint = `discussions`;
+    return await HttpNodeService.get(endpoint).then(function(res) {
+      return res.data;
+    });
+  } catch (error) {
+    return {};
+  }
+}

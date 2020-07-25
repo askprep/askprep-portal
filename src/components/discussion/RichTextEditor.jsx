@@ -4,12 +4,12 @@ import {
   EditorState,
   RichUtils,
   AtomicBlockUtils,
-  convertFromRaw,
+  convertToRaw,
   Editor,
   // Modifier,
 } from 'draft-js';
 // import { stateFromHTML } from 'draft-js-import-html';
-import { Image } from 'semantic-ui-react'
+import { Image } from 'semantic-ui-react';
 import 'draft-js/dist/Draft.css';
 import './discussion.css';
 import { data } from './sample';
@@ -83,20 +83,22 @@ export default class RichTextEditor extends React.Component {
     ]);
 
     this.state = {
-      editorState: EditorState.createWithContent(
-        convertFromRaw(data),
-        decorator,
-      ),
+      editorState: EditorState.createEmpty(),
     };
 
     this.focus = () => this.refs.editor.focus();
-    this.onChange = (editorState) => this.setState({ editorState });
+    this.onChange = (editorState) =>
+      this.setState({ editorState }, () => {
+        this.props.setEditorData(
+          convertToRaw(editorState.getCurrentContent()).blocks,
+        );
+      });
 
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.onTab = (e) => this._onTab(e);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
-    // this.handlePastedText = (text, html) => this._handlePastedText(text, html);
+    this.handlePastedText = (text, html) => this._handlePastedText(text, html);
     this.handlePastedFiles = (files) => this._handlePastedFiles(files);
   }
 
@@ -182,37 +184,16 @@ export default class RichTextEditor extends React.Component {
     }
 
     return null;
-  }
+  };
 
-  // _handlePastedText = (text, html) => {
-  //   // if they try to paste something they shouldn't let's handle it
-  //   debugger;
-  //   //================
-  //   const { editorState } = this.state;
-  //   const blockMap = stateFromHTML(html || text /* here */).blockMap;
-  //   // const newContent = Modifier.insertText(
-  //   //   this.state.editorState.getCurrentContent(),
-  //   //   this.state.editorState.getSelection(),
-  //   //   blockMap,
-  //   // );
-
-  //   // // update our state with the new editor content
-  //   // this.onChange(
-  //   //   EditorState.push(this.state.editorState, newContent, 'insert-characters'),
-  //   // );
-  //   // return true;
-
-  //   // ==============
-
-  //   const newState = Modifier.replaceWithFragment(editorState.getCurrentContent(), editorState.getSelection(), blockMap);
-  //   this.onChange(EditorState.push(editorState, newState, 'insert-fragment'))
-  //   return true
-  // };
+  _handlePastedText = (text, html) => {
+    this.props.setsnippet(text);
+  };
 
   _handlePastedFiles = async (files) => {
     const base64 = await this.convertTobase64(files[0]);
     this.insertImage(this.state.editorState, base64);
-  }
+  };
 
   render() {
     const { editorState } = this.state;
@@ -257,7 +238,7 @@ export default class RichTextEditor extends React.Component {
             ref="editor"
             spellCheck={true}
             blockRendererFn={this.myBlockRenderer}
-            // handlePastedText={this.handlePastedText}
+            handlePastedText={this.handlePastedText}
             handlePastedFiles={this.handlePastedFiles}
           />
         </div>
@@ -385,10 +366,11 @@ const InlineStyleControls = (props) => {
   );
 };
 
-
 class MediaComponent extends React.Component {
   render() {
-    const { src } = this.props.contentState.getEntity(this.props.block.getEntityAt(0)).getData();
+    const { src } = this.props.contentState
+      .getEntity(this.props.block.getEntityAt(0))
+      .getData();
     // const {block, contentState} = this.props;
     // const {foo} = this.props.blockProps;
     // const data = contentState.getEntity(block.getEntityAt(0)).getData();
@@ -397,6 +379,6 @@ class MediaComponent extends React.Component {
       <figure>
         <img src={src} />
       </figure>
-    )
+    );
   }
 }
